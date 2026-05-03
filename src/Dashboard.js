@@ -8,8 +8,6 @@ import AddMeal, {
   drinkOptions
 } from "./AddMeal";
 import GlucoseForm from "./GlucoseForm";
-import { getMealIssues, vegToCupMap } from "./mealUtils";
-
 
 export default function Dashboard() {
   const [meals, setMeals] = useState([]);
