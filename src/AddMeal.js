@@ -447,7 +447,6 @@ function getMealScore(carb, veg, protein, drink, profile) {
   const {
     carb_min,
     carb_max,
-    require_veg,
     require_protein,
     avoid_sugary_drink
   } = profile;

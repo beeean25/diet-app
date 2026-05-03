@@ -165,37 +165,6 @@ function getMealGlucose(meal) {
 
   return { before, after, fasting };
 }
-const updateMeal = async () => {
-  if (!editingMeal) return;
-
-  console.log("EDITING ID:", editingMeal.id);
-  console.log("FULL EDITING OBJECT:", editingMeal);
-
-  const { data, error } = await supabase
-    .from("meals")
-    .update({
-      carb_food: editingMeal.carb_food,
-      carb_portion: editingMeal.carb_portion,
-      protein_food: editingMeal.protein_food,
-      protein_portion: editingMeal.protein_portion,
-      veg_portion: editingMeal.veg_portion,
-      fruit: editingMeal.fruit,
-      fruit_portion: editingMeal.fruit_portion,
-      drink: editingMeal.drink,
-    })
-    .eq("id", Number(editingMeal.id))   // safer
-    .select();   // ✅ VERY IMPORTANT
-
-  console.log("UPDATED DATA:", data);
-
-  if (error) {
-    alert(error.message);
-    return;
-  }
-
-  setEditingMeal(null);
-  fetchMeals();
-};
   return (
     <div style={{ padding: 20 }}>
       <h2>Dashboard / 仪表板</h2>
@@ -208,7 +177,7 @@ const updateMeal = async () => {
 />
 {!editingMeal && (
   <AddMeal refresh={fetchMeals} />
-)}   // 
+)}  
 
       <h3>Hidangan / 餐点记录</h3>
 
@@ -242,18 +211,6 @@ const getColor = (status) => {
   if (status.includes("Tiada")) return "gray";
   return "red";
 };
-const issues = getMealIssues({
-  carb: meal.carb_exchange || 0,
-  carb_min: profile?.carb_min || 0,
-  carb_max: profile?.carb_max || 999,
-  veg: meal.veg_portion,
-  vegToCupMap,
-  profile,
-  require_protein: true,
-  hasProtein: meal.protein_food !== "None",
-  avoid_sugary_drink: true,
-  isSugaryDrink: meal.drink?.toLowerCase().includes("manis")
-});
 
 const totalExchange =
   (meal.carb_exchange || 0) + (meal.fruit_exchange || 0);
