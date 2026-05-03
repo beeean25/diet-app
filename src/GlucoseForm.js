@@ -5,7 +5,6 @@ export default function GlucoseForm({ refresh }) {
   const [glucoseValue, setGlucoseValue] = useState("");
   const [glucoseTime, setGlucoseTime] = useState("");
   const [glucoseDate, setGlucoseDate] = useState("");
-  const [note, setRemark] = useState("");
   const [timing, setTiming] = useState("Sebelum makan / 餐前");
   
  function detectGlucoseStatus(value, timing) {

@@ -8,7 +8,6 @@ import AddMeal, {
   drinkOptions
 } from "./AddMeal";
 import GlucoseForm from "./GlucoseForm";
-import MealList from "./MealList";
 import { getMealIssues, vegToCupMap } from "./mealUtils";
 
 
@@ -17,9 +16,6 @@ export default function Dashboard() {
   const [glucoseLogs, setGlucoseLogs] = useState([]);
   const [profile, setProfile] = useState(null);
  const [editingMeal, setEditingMeal] = useState(null);
-const getStatus = (value, timing) => {
-  return detectGlucoseStatus(value, timing);
-};
 
   const fetchMeals = async () => {
     console.log("🚀 fetchMeals START");

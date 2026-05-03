@@ -24,7 +24,7 @@ export function getMealIssues({
   isSugaryDrink
 }) {
   const issues = [];
-  const minCarb = profile?.carb_min ?? 1;
+  
 const maxCarb = profile?.carb_max ?? 4;
 
 if (carb > maxCarb) {
