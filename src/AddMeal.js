@@ -882,12 +882,21 @@ if (onSave) onSave();
 {/* FRUIT TYPE */}
 <select
   value={fruit}
-  onChange={(e)=>{
-    setFruit(e.target.value);
+ onChange={(e)=>{
+  const selectedFruit = e.target.value;
+  setFruit(selectedFruit);
+
+  // ✅ AUTO-SET FIRST PORTION
+  if (fruitMap[selectedFruit] && fruitMap[selectedFruit].length > 0) {
+    setFruitPortion(fruitMap[selectedFruit][0]);
+  } else {
     setFruitPortion("None");
-    setFruitOther("");
-    setFruitOtherPortion("");
-  }}
+  }
+
+  // reset others
+  setFruitOther("");
+  setFruitOtherPortion("");
+}}
 >
   {Object.keys(fruitMap).map((v, i) => (
     <option key={i} value={v}>{v}</option>

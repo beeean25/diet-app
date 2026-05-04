@@ -8,13 +8,23 @@ import AddMeal, {
   drinkOptions
 } from "./AddMeal";
 import GlucoseForm from "./GlucoseForm";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+  ResponsiveContainer,
+  ReferenceLine
+} from "recharts";
 
 export default function Dashboard() {
   const [meals, setMeals] = useState([]);
   const [glucoseLogs, setGlucoseLogs] = useState([]);
   const [profile, setProfile] = useState(null);
  const [editingMeal, setEditingMeal] = useState(null);
-
+const [selectedDate, setSelectedDate] = useState("");
   const fetchMeals = async () => {
     console.log("🚀 fetchMeals START");
     const { data,error } = await supabase
@@ -64,6 +74,10 @@ const fetchProfile = async () => {
   fetchMeals();
   fetchGlucose();
   fetchProfile();   // ✅ ADD THIS
+}, []);
+useEffect(() => {
+  const today = new Date().toISOString().split("T")[0];
+  setSelectedDate(today);
 }, []);
   // =========================
 // 🩸 GLUCOSE STATUS FUNCTION (ADD HERE)
@@ -121,38 +135,51 @@ function getMealGlucose(meal) {
   const sameDayLogs = glucoseLogs.filter(
     (g) => new Date(g.glucose_date).toDateString() === new Date(meal.date).toDateString()
   );
-
+console.log("=== DEBUG START ===");
+console.log("MEAL:", meal.date, meal.time);
+console.log("ALL LOGS:", glucoseLogs);
+console.log("SAME DAY LOGS:", sameDayLogs);
   // BEFORE candidates
   const beforeCandidates = sameDayLogs.filter((g) =>
-    g.timing?.includes("Sebelum")
-  );
+  g.timing?.toLowerCase().includes("sebelum") ||
+  g.timing?.toLowerCase().includes("before") ||
+  g.timing?.toLowerCase().includes("puasa")
+);
 
   let before = null;
-  let minBeforeDiff = Infinity;
+let minBeforeDiff = Infinity;
 
-  beforeCandidates.forEach((g) => {
-    const diff = getTimeDiffInMinutes(g.glucose_time, meal.time);
-    if (diff < minBeforeDiff && diff <= 120) {
-      minBeforeDiff = diff;
-      before = g;
-    }
-  });
+beforeCandidates.forEach((g) => {
+  const gTime = new Date(`${g.glucose_date}T${g.glucose_time}`);
+  const mealTime = new Date(`${meal.date}T${meal.time}`);
 
-  // AFTER candidates
-  const afterCandidates = sameDayLogs.filter((g) =>
-    g.timing?.includes("Selepas")
-  );
+  const diff = (mealTime - gTime) / 60000; // minutes
+
+  if (diff >= 0 && diff <= 200 && diff < minBeforeDiff) {
+    minBeforeDiff = diff;
+    before = g;
+  }
+});
 
   let after = null;
-  let minAfterDiff = Infinity;
+let minAfterDiff = Infinity;
+console.log("BEFORE CANDIDATES:", beforeCandidates);
+const afterCandidates = sameDayLogs.filter((g) =>
+  g.timing?.toLowerCase().includes("selepas") ||
+  g.timing?.toLowerCase().includes("after")
+);
+afterCandidates.forEach((g) => {
+  const gTime = new Date(`${g.glucose_date}T${g.glucose_time}`);
+  const mealTime = new Date(`${meal.date}T${meal.time}`);
 
-  afterCandidates.forEach((g) => {
-    const diff = getTimeDiffInMinutes(g.glucose_time, meal.time);
-    if (diff < minAfterDiff && diff <= 120) {
-      minAfterDiff = diff;
-      after = g;
-    }
-  });
+  const diff = (gTime - mealTime) / 60000; // minutes
+
+  if (diff >= 0 && diff <= 200 && diff < minAfterDiff) {
+    minAfterDiff = diff;
+    after = g;
+  }
+});
+console.log("AFTER CANDIDATES:", afterCandidates);
   const fastingCandidates = sameDayLogs.filter(
     (g) =>
       g.timing === "fasting" ||
@@ -160,9 +187,34 @@ function getMealGlucose(meal) {
   );
 
   const fasting = fastingCandidates[0]; 
-
+console.log("SELECTED BEFORE:", before);
+console.log("SELECTED AFTER:", after);
+console.log("=== DEBUG END ===");
   return { before, after, fasting };
 }
+  // 📈 FILTERED GLUCOSE DATA
+const glucoseChartData = glucoseLogs
+  .filter((g) => {
+    if (!selectedDate) return true;
+    return g.glucose_date === selectedDate;
+  })
+  .sort((a, b) =>
+    new Date(`${a.glucose_date}T${a.glucose_time}`) -
+    new Date(`${b.glucose_date}T${b.glucose_time}`)
+  )
+  .map((g) => ({
+    time: g.glucose_time.slice(0, 5),
+    value: Number(g.glucose_value),
+  }));
+
+// 📊 CHECK IF DATA EXISTS
+const hasData = glucoseChartData.length > 0;
+
+// 🍽 MEAL TIMES (for red lines)
+const mealTimes = meals
+  .filter((m) => (selectedDate ? m.date === selectedDate : true))
+  .map((m) => m.time.slice(0, 5));
+
   return (
     <div style={{ padding: 20 }}>
       <h2>Dashboard / 仪表板</h2>
@@ -176,10 +228,54 @@ function getMealGlucose(meal) {
 {!editingMeal && (
   <AddMeal refresh={fetchMeals} />
 )}  
+{/* 📅 DATE FILTER */}
+<div style={{ marginTop: 10, marginBottom: 10 }}>
+  <label>📅 Pilih tarikh / 选择日期: </label>
+  <input
+    type="date"
+    value={selectedDate}
+    onChange={(e) => setSelectedDate(e.target.value)}
+  />
+</div>
 
+{/* 📈 GLUCOSE TREND */}
+<h4>📈 Trend Glukosa / 血糖趋势</h4>
+
+{!hasData ? (
+  <p style={{ color: "gray" }}>
+    ⚠ Tiada data untuk tarikh ini / 此日期没有数据
+  </p>
+) : (
+  <ResponsiveContainer width="100%" height={250}>
+    <LineChart data={glucoseChartData}>
+      <CartesianGrid strokeDasharray="3 3" />
+      <XAxis dataKey="time" />
+      <YAxis />
+      <Tooltip />
+
+      {/* 🔴 MEAL TIME MARKERS */}
+      {mealTimes.map((t, i) => (
+        <ReferenceLine
+          key={i}
+          x={t}
+          stroke="red"
+          strokeWidth={2}     // 👈 ADD THIS
+          label="Meal"
+        />
+      ))}
+
+      <Line type="monotone" dataKey="value" stroke="#8884d8" />
+    </LineChart>
+  </ResponsiveContainer>
+)}
       <h3>Hidangan / 餐点记录</h3>
 
-{meals.map((meal) => {
+{meals
+  .filter((meal) => {
+    if (!selectedDate) return true;
+    return meal.date === selectedDate;
+  })
+  .map((meal) => {
    console.log("MEAL DATA:", meal);
   const isEditing = editingMeal?.id === meal.id;
   if (isEditing) {
