@@ -110,22 +110,6 @@ function detectGlucoseStatus(value, timing) {
   return "Tiada data / 无数据";
 }
 // =========================
-// ⏱ FIXED TIME PARSING (ADD HERE)
-// =========================
-function getTimeDiffInMinutes(t1, t2) {
-  if (!t1 || !t2) return Infinity;
-
-  const normalize = (t) => {
-    // handle "08:56:00" → "08:56"
-    return t.length > 5 ? t.slice(0, 5) : t;
-  };
-
-  const [h1, m1] = normalize(t1).split(":").map(Number);
-  const [h2, m2] = normalize(t2).split(":").map(Number);
-
-  return Math.abs((h1 * 60 + m1) - (h2 * 60 + m2));
-}
-// =========================
 // 📊 MATCH GLUCOSE WITH MEAL
 // =========================
 function getMealGlucose(meal) {
@@ -214,7 +198,8 @@ const hasData = glucoseChartData.length > 0;
 const mealTimes = meals
   .filter((m) => (selectedDate ? m.date === selectedDate : true))
   .map((m) => m.time.slice(0, 5));
-
+console.log("MEAL TIMES:", mealTimes);
+console.log("CHART TIMES:", glucoseChartData.map(d => d.time));
   return (
     <div style={{ padding: 20 }}>
       <h2>Dashboard / 仪表板</h2>
