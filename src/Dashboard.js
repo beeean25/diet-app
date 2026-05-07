@@ -366,7 +366,11 @@ if (before?.id && editingMeal.before_value) {
   await supabase
     .from("glucose_logs")
     .update({
-      glucose_value: editingMeal.before_value
+      glucose_value: editingMeal.before_value,
+    glucose_flag: detectGlucoseStatus(
+      editingMeal.before_value,
+      before.timing
+    )
     })
     .eq("id", before.id);
 }
@@ -376,8 +380,12 @@ if (after?.id && editingMeal.after_value) {
   await supabase
     .from("glucose_logs")
     .update({
-      glucose_value: editingMeal.after_value
-    })
+      glucose_value: editingMeal.after_value,
+glucose_flag: detectGlucoseStatus(
+  editingMeal.after_value,
+  after.timing
+)
+})
     .eq("id", after.id);
 }
 
@@ -386,7 +394,11 @@ if (fasting?.id && editingMeal.fasting_value) {
   await supabase
     .from("glucose_logs")
     .update({
-      glucose_value: editingMeal.fasting_value
+      glucose_value: editingMeal.fasting_value,
+glucose_flag: detectGlucoseStatus(
+  editingMeal.fasting_value,
+  fasting.timing
+)
     })
     .eq("id", fasting.id);
 }
@@ -394,8 +406,10 @@ if (fasting?.id && editingMeal.fasting_value) {
 
   setEditingMeal(null);
 
+setTimeout(() => {
   fetchMeals();
   fetchGlucose();
+}, 300);
 };
   return (
     <div
@@ -714,7 +728,11 @@ if (fasting?.id && editingMeal.fasting_value) {
     <input
       type="number"
       step="0.1"
-      value={editingMeal.fasting_value || fasting?.glucose_value || ""}
+      value={
+  editingMeal.fasting_value ??
+  fasting?.glucose_value ??
+  ""
+}
       onChange={(e) =>
         setEditingMeal({
           ...editingMeal,
@@ -743,7 +761,11 @@ if (fasting?.id && editingMeal.fasting_value) {
     <input
       type="number"
       step="0.1"
-      value={editingMeal.before_value || before?.glucose_value || ""}
+      value={
+  editingMeal.before_value ??
+  before?.glucose_value ??
+  ""
+}
       onChange={(e) =>
         setEditingMeal({
           ...editingMeal,
@@ -772,7 +794,11 @@ if (fasting?.id && editingMeal.fasting_value) {
     <input
       type="number"
       step="0.1"
-      value={editingMeal.after_value || after?.glucose_value || ""}
+      value={
+  editingMeal.after_value ??
+  after?.glucose_value ??
+  ""
+}
       onChange={(e) =>
         setEditingMeal({
           ...editingMeal,
