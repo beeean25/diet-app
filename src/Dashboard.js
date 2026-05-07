@@ -709,18 +709,18 @@ if (fasting?.id && editingMeal.fasting_value) {
 </p>
 
 <p>
-  Gula sebelum makan / 餐前血糖:{" "}
+  Gula selepas makan / 餐后血糖:{" "}
 
   {isEditing ? (
 
     <input
       type="number"
       step="0.1"
-      value={editingMeal.before_value || before?.glucose_value || ""}
+      value={editingMeal.after_value || after?.glucose_value || ""}
       onChange={(e) =>
         setEditingMeal({
           ...editingMeal,
-          before_value: e.target.value
+          after_value: e.target.value
         })
       }
       style={{ width: 80 }}
@@ -728,9 +728,9 @@ if (fasting?.id && editingMeal.fasting_value) {
 
   ) : (
 
-    <strong style={{ color: getColor(beforeStatus) }}>
-      {before
-        ? `${before.glucose_value} (${beforeStatus})`
+    <strong style={{ color: getColor(afterStatus) }}>
+      {after
+        ? `${after.glucose_value} (${afterStatus})`
         : "Tiada / 无"}
     </strong>
 
