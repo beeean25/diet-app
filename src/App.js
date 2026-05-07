@@ -63,13 +63,25 @@ useEffect(() => {
 }, []);
 
 useEffect(() => {
-  const hash = window.location.hash;
+  const handleRecovery = async () => {
+    const hash = window.location.hash;
 
-  if (hash.includes("type=recovery")) {
-    console.log("🔐 Recovery detected");
+    if (hash.includes("type=recovery")) {
+      console.log("🔐 Recovery detected");
 
-    navigate("/reset-password");   // ✅ redirect
-  }
+      // wait for session to be ready
+      const { data } = await supabase.auth.getSession();
+
+      if (data?.session) {
+        window.history.replaceState(null, "", "/reset-password");
+        navigate("/reset-password");
+      } else {
+        console.log("⚠️ No session yet, retry...");
+      }
+    }
+  };
+
+  handleRecovery();
 }, [navigate]);
 
   // 🔹 Listen to login/logout changes
