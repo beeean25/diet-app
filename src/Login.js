@@ -31,7 +31,7 @@ const resetPassword = async () => {
     if (sending) return; // 🚫 prevent spam click
     setSending(true);
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: window.location.origin
+      redirectTo: "https://diet-app-nine-ruddy.vercel.app/reset-password"
     });
 
     if (error) {
