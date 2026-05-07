@@ -8,7 +8,11 @@ export default function Login() {
   const signUp = async () => {
   const { error } = await supabase.auth.signUp({
     email,
-    password
+    password,
+    options: {
+    emailRedirectTo:
+      "https://diet-app-nine-ruddy.vercel.app/login"
+  }
   });
 
   if (error) {
@@ -53,7 +57,12 @@ const resetPassword = async () => {
 
       <button onClick={login}>Log masuk / 登录</button>
       <button onClick={signUp}>Pendaftaran Baru / 注册</button>
-      <button onClick={resetPassword}>Terlupa Password / 忘记密码
+      <button onClick={resetPassword}
+  disabled={sending}
+>
+  {sending
+    ? "Sending..."
+    : "Terlupa Password / 忘记密码"}
 </button>
     </div>
   );
