@@ -271,7 +271,15 @@ console.log("CHART TIMES:", glucoseChartData.map(d => d.time));
   console.log("Selected Protein:", editingMeal.protein_food);
   console.log("Available Portions:", proteinMap[editingMeal.protein_food]);
 }
-  const liveFruitExchange =
+const liveCarbExchange =
+  isEditing &&
+  editingMeal.carb_food &&
+  editingMeal.carb_portion
+    ? carbMap?.[editingMeal.carb_food]?.[
+        editingMeal.carb_portion
+      ] || 0
+    : meal.carb_exchange || 0;  
+const liveFruitExchange =
   isEditing && editingMeal.fruit && editingMeal.fruit_portion
     ? fruitExchangeMap?.[editingMeal.fruit]?.[editingMeal.fruit_portion] || 0
     : meal.fruit_exchange || 0;
@@ -296,8 +304,14 @@ const getColor = (status) => {
 };
 
 const totalExchange =
-  (meal.carb_exchange || 0) + (meal.fruit_exchange || 0);
+  (isEditing
+    ? liveCarbExchange
+    : (meal.carb_exchange || 0)) +
 
+  (isEditing
+    ? liveFruitExchange
+    : (meal.fruit_exchange || 0));
+    
 const maxCarb = profile?.carb_max || 3;
 const saveInlineEdit = async () => {
 
@@ -457,11 +471,15 @@ if (fasting?.id && editingMeal.fasting_value) {
 ) : (
   <p>🍚 Carb: {meal.carb_food} ({meal.carb_portion})</p>
 )}
-      <p>🍚 Carb Exchange:{" "}
-        <strong style={{ color: "orange" }}>
-        {meal.carb_exchange ?? 0}
-        </strong>
-      </p>
+      <p>
+  🍚 Carb Exchange:{" "}
+
+  <strong style={{ color: "orange" }}>
+    {isEditing
+      ? liveCarbExchange
+      : (meal.carb_exchange ?? 0)}
+  </strong>
+</p>
       <p><b>🍗 Protein / 蛋白质:</b></p>
       {isEditing ? (
   <>
