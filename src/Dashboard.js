@@ -29,7 +29,7 @@ const [selectedDate, setSelectedDate] = useState("");
     const { data,error } = await supabase
       .from("meals")
       .select("id, meal_type, date, time, glucose_flag, carb_food, carb_portion, carb_exchange, protein_food, protein_portion, veg_portion, fruit, fruit_portion, fruit_exchange, drink, meal_score")
-      .eq("user_id", user.id)
+      .eq("user_id", user?.id)
       .order("date", { ascending: false });
        console.log("📦 DATA:", data);
   console.log("❌ ERROR:", error);
@@ -47,7 +47,7 @@ const [selectedDate, setSelectedDate] = useState("");
     const { data } = await supabase
       .from("glucose_logs")
       .select("*")
-      .eq("user_id", user.id)
+      .eq("user_id", user?.id)
      .order("glucose_date", { ascending: false })
     .order("glucose_time", { ascending: false })
 
@@ -207,7 +207,9 @@ console.log("CHART TIMES:", glucoseChartData.map(d => d.time));
   }}
 />
 {!editingMeal && (
-  <AddMeal user={user} profile={profile} refresh={fetchMeals} />
+  <AddMeal user={user} 
+  profile={profile} 
+  refresh={fetchMeals} />
 )}  
 {/* 📅 DATE FILTER */}
 <div style={{ marginTop: 10, marginBottom: 10 }}>

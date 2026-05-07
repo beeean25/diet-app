@@ -209,7 +209,12 @@ export const fruitExchangeMap = {
     "Teh/Kopi 1 sudu besar gula / 1汤匙糖","Teh/Kopi 2 sudu besar gula / 2汤匙糖",
     "Minuman coklat / 巧克力饮料","Susu kosong / 牛奶","Susu berperisa / 调味奶","Lain-lain / 其他"
   ];
-export default function AddMeal({ refresh, existingMeal, onSave, user, profile }){
+export default function AddMeal({ 
+  user, 
+  profile, 
+  refresh, 
+  existingMeal, 
+  onSave }){
   const [loggingOut, setLoggingOut] = useState(false);
   const navigate = useNavigate();
   const [mealType, setMealType] = useState("Sarapan pagi （早餐）");
@@ -246,7 +251,7 @@ const resetForm = () => {
   setProteinFood("");
   setProteinPortion("");
   setVegPortion("");
-  setFruit([]);
+  setFruit("None");
   setFruitPortion("");
   setDrink("");
 
@@ -730,11 +735,14 @@ if (refresh) {
 }
 // 🔙 exit edit mode
 if (onSave) onSave();
-};
+
+// ✅ clear form AFTER successful save
 if (!existingMeal) {
   resetForm();
 }
-  return (
+
+};
+return (
     <div>
 
       <button onClick={handleLogout} disabled={loggingOut}>
