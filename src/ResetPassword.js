@@ -23,45 +23,53 @@ export default function ResetPassword() {
     handleSession();
   }, []);
 
-  const updatePassword = async () => {
+ const updatePassword = async () => {
 
-  // 🚫 prevent double execution
   if (updating) return;
 
   setUpdating(true);
 
-  console.log("🚀 Update clicked");
+  try {
 
-  if (!password) {
-    alert("Please enter password");
+    if (!password) {
+      alert("Please enter password");
+      setUpdating(false);
+      return;
+    }
+
+    console.log("🚀 Update clicked");
+
+    const { data, error } = await supabase.auth.updateUser({
+      password: password
+    });
+
+    console.log("RESULT:", data);
+    console.log("ERROR:", error);
+
+    if (error) {
+      alert(error.message);
+      setUpdating(false);
+      return;
+    }
+
+    alert("Password updated! Please login again.");
+
+    setTimeout(async () => {
+
+      await supabase.auth.signOut();
+
+      navigate("/login");
+
+    }, 1000);
+
+  } catch (err) {
+
+    console.log("RESET ERROR:", err);
+
+    alert("Reset failed");
+
     setUpdating(false);
-    return;
   }
-
-  const { data, error } = await supabase.auth.updateUser({
-    password: password
-  });
-
-  console.log("RESULT:", data);
-  console.log("ERROR:", error);
-
-  if (error) {
-  alert(error.message);
-  setUpdating(false);
-
-} else {
-
-  alert("Password updated! Please login again.");
-
-  // ⏳ wait for Supabase auth lock release
-  setTimeout(async () => {
-
-    await supabase.auth.signOut();
-
-    navigate("/login");
-
-  }, 1000);
-}
 };
 
 
