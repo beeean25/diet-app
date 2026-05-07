@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { supabase } from "./supabaseClient";
 
-export default function GlucoseForm({ refresh }) {
+export default function GlucoseForm({ refresh, user }) {
   const [glucoseValue, setGlucoseValue] = useState("");
   const [glucoseTime, setGlucoseTime] = useState("");
   const [glucoseDate, setGlucoseDate] = useState("");
@@ -36,12 +36,15 @@ export default function GlucoseForm({ refresh }) {
 }
 const saveGlucose = async () => {
     if (!glucoseValue) {
-    alert("Please enter glucose value / 请输入血糖值");
+    alert("Sila isi bacaan gula / 请输入血糖值");
     return;
   }
-
+if (!glucoseDate) {
+  alert("Sila pilih tarikh yang diambil / 请选择日期");
+  return;
+}
   if (!glucoseTime) {
-    alert("Please select time / 请选择时间");
+    alert("Sila pilih masa yang diambil / 请选择时间");
     return;
   }
 
@@ -49,11 +52,9 @@ const saveGlucose = async () => {
 
    const glucoseFlag = detectGlucoseStatus(glucoseValue, timing);
 
-  const { data: userData } = await supabase.auth.getUser();
-
 const cleanTime = glucoseTime ? glucoseTime.slice(0,5) : "";
 const payload = {
-  user_id: userData?.user?.id,
+  user_id: user?.id,
   glucose_value: finalGlucose,
   glucose_time: cleanTime,
   glucose_date: glucoseDate,

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { supabase } from "./supabaseClient";
 import AddMeal, {
   carbMap,
@@ -19,17 +19,17 @@ import {
   ReferenceLine
 } from "recharts";
 
-export default function Dashboard() {
+export default function Dashboard({ user, profile }) {
   const [meals, setMeals] = useState([]);
   const [glucoseLogs, setGlucoseLogs] = useState([]);
-  const [profile, setProfile] = useState(null);
  const [editingMeal, setEditingMeal] = useState(null);
 const [selectedDate, setSelectedDate] = useState("");
-  const fetchMeals = async () => {
+  const fetchMeals = useCallback(async () => {
     console.log("🚀 fetchMeals START");
     const { data,error } = await supabase
       .from("meals")
       .select("id, meal_type, date, time, glucose_flag, carb_food, carb_portion, carb_exchange, protein_food, protein_portion, veg_portion, fruit, fruit_portion, fruit_exchange, drink, meal_score")
+      .eq("user_id", user.id)
       .order("date", { ascending: false });
        console.log("📦 DATA:", data);
   console.log("❌ ERROR:", error);
@@ -41,40 +41,25 @@ const [selectedDate, setSelectedDate] = useState("");
 
     setMeals(data || []);
     
-  };
+ }, [user]);
 
-  const fetchGlucose = async () => {
+  const fetchGlucose = useCallback(async () => {
     const { data } = await supabase
       .from("glucose_logs")
       .select("*")
+      .eq("user_id", user.id)
      .order("glucose_date", { ascending: false })
     .order("glucose_time", { ascending: false })
 
     setGlucoseLogs(data || []);
-  };
-const fetchProfile = async () => {
-  const { data: userData } = await supabase.auth.getUser();
-
-  const { data, error } = await supabase
-    .from("profile")
-    .select("*")
-    .eq("id", userData.user.id)
-    .single();
-
-  if (error) {
-    console.log("PROFILE ERROR:", error);
-    return;
-  }
-
-  console.log("PROFILE:", data);
-  setProfile(data);
-};
+  }, [user]);
 
   useEffect(() => {
-  fetchMeals();
-  fetchGlucose();
-  fetchProfile();   // ✅ ADD THIS
-}, []);
+  if (user?.id) {
+    fetchMeals();
+    fetchGlucose();
+  }
+}, [user, fetchMeals, fetchGlucose]);
 useEffect(() => {
   const today = new Date().toISOString().split("T")[0];
   setSelectedDate(today);
@@ -177,19 +162,29 @@ console.log("=== DEBUG END ===");
   return { before, after, fasting };
 }
   // 📈 FILTERED GLUCOSE DATA
-const glucoseChartData = glucoseLogs
-  .filter((g) => {
-    if (!selectedDate) return true;
-    return g.glucose_date === selectedDate;
-  })
-  .sort((a, b) =>
-    new Date(`${a.glucose_date}T${a.glucose_time}`) -
-    new Date(`${b.glucose_date}T${b.glucose_time}`)
-  )
-  .map((g) => ({
-    time: g.glucose_time.slice(0, 5),
-    value: Number(g.glucose_value),
-  }));
+const glucoseChartData = [
+  // 🔵 glucose data
+  ...glucoseLogs
+    .filter((g) => (selectedDate ? g.glucose_date === selectedDate : true))
+    .map((g) => ({
+      time: g.glucose_time.slice(0, 5),
+      value: Number(g.glucose_value),
+      type: "glucose"
+    })),
+
+  // 🔴 meal time (inject into chart)
+  ...meals
+    .filter((m) => (selectedDate ? m.date === selectedDate : true))
+    .map((m) => ({
+      time: m.time.slice(0, 5),
+      value: null,
+      type: "meal"
+    }))
+]
+.sort((a, b) =>
+  new Date(`2020-01-01T${a.time}`) -
+  new Date(`2020-01-01T${b.time}`)
+);
 
 // 📊 CHECK IF DATA EXISTS
 const hasData = glucoseChartData.length > 0;
@@ -205,13 +200,14 @@ console.log("CHART TIMES:", glucoseChartData.map(d => d.time));
       <h2>Dashboard / 仪表板</h2>
 
       <GlucoseForm
+  user={user}   // 👈 ADD THIS
   refresh={() => {
     fetchGlucose();
-    fetchMeals();   // ✅ ADD THIS
+    fetchMeals();
   }}
 />
 {!editingMeal && (
-  <AddMeal refresh={fetchMeals} />
+  <AddMeal user={user} profile={profile} refresh={fetchMeals} />
 )}  
 {/* 📅 DATE FILTER */}
 <div style={{ marginTop: 10, marginBottom: 10 }}>
@@ -245,11 +241,17 @@ console.log("CHART TIMES:", glucoseChartData.map(d => d.time));
           x={t}
           stroke="red"
           strokeWidth={2}     // 👈 ADD THIS
-          label="Meal"
+          label={{ value: "🍽", position: "insideTop" }}
         />
       ))}
 
-      <Line type="monotone" dataKey="value" stroke="#8884d8" />
+      <Line
+  type="monotone"
+  dataKey="value"
+  stroke="#8884d8"
+  connectNulls   // ✅ ADD THIS
+   dot={{ r: 4 }}
+/>
     </LineChart>
   </ResponsiveContainer>
 )}
@@ -627,6 +629,8 @@ const maxCarb = profile?.carb_max || 3;
 })}
 {editingMeal && (
   <AddMeal
+    user={user}
+    profile={profile} 
     existingMeal={editingMeal}
     refresh={fetchMeals}
     onSave={() => setEditingMeal(null)}

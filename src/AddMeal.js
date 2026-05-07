@@ -1,5 +1,6 @@
  import { useState, useEffect } from "react";
 import { supabase } from "./supabaseClient";
+import { useNavigate } from "react-router-dom";
 import { getMealIssues, vegToCupMap } from "./mealUtils";
 // =========================
   // 🍚 CARBOHYDRATE (FULL + GROUPED)
@@ -208,8 +209,9 @@ export const fruitExchangeMap = {
     "Teh/Kopi 1 sudu besar gula / 1汤匙糖","Teh/Kopi 2 sudu besar gula / 2汤匙糖",
     "Minuman coklat / 巧克力饮料","Susu kosong / 牛奶","Susu berperisa / 调味奶","Lain-lain / 其他"
   ];
-export default function AddMeal({ refresh, existingMeal, onSave }) {
-
+export default function AddMeal({ refresh, existingMeal, onSave, user, profile }){
+  const [loggingOut, setLoggingOut] = useState(false);
+  const navigate = useNavigate();
   const [mealType, setMealType] = useState("Sarapan pagi （早餐）");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
@@ -236,6 +238,28 @@ const [fruitOtherPortion, setFruitOtherPortion] = useState("");
   const [fruitOther, setFruitOther] = useState("");
 
   const [lastScore, setLastScore] = useState("");
+  // 🔄 Reset form after save
+const resetForm = () => {
+  setMealType("");
+  setCarbFood("");
+  setCarbPortion("");
+  setProteinFood("");
+  setProteinPortion("");
+  setVegPortion("");
+  setFruit([]);
+  setFruitPortion("");
+  setDrink("");
+
+  // optional fields (if you have them)
+  setProteinOtherFood("");
+  setProteinOtherPortion("");
+  setVegOther("");
+  setFruitOther("");
+  setFruitOtherPortion("");
+  setDrinkOther("");
+
+  setLastScore(null);
+};
 useEffect(() => {
   if (existingMeal) {
     setMealType(existingMeal.meal_type || "");
@@ -258,8 +282,17 @@ useEffect(() => {
 }, [existingMeal]);
 
   const handleLogout = async () => {
-  await supabase.auth.signOut();
-  window.location.href = "/";  // redirect to login page
+  setLoggingOut(true);
+
+  const { error } = await supabase.auth.signOut();
+
+  if (error) {
+    alert(error.message);
+    setLoggingOut(false);
+  } else {
+   navigate("/login");   // 👈 ADD HERE
+  }
+  setLoggingOut(false); 
 };
 
 const carbGroupMap = {
@@ -352,7 +385,7 @@ const carbExchangeByGroup = {
     "3 keping / 3片": 1,
     "4 keping / 4片": 1.3,
     "5 keping / 5片": 1.6,
-    "6 keping / 6片": 1
+    "6 keping / 6片": 2
   },
 
   // 🥣 oats
@@ -421,23 +454,6 @@ const carbExchangeByGroup = {
   return value || 0;
 }
 // =========================
-// 👤 FETCH USER SETTINGS
-// =========================
-async function getUserProfile() {
-  const { data: userData } = await supabase.auth.getUser();
-
-  console.log("USER:", userData);
-
-  const { data, error } = await supabase
-    .from("profile")
-    .select("*")
-    .eq("id", userData.user.id);
-
-  console.log("PROFILE DATA:", data);
-  console.log("PROFILE ERROR:", error);
-
-  return data?.[0];
-}// =========================
 // 🚦 CUSTOM MEAL SCORING (ADVANCED)
 // =========================
 function getMealScore(carb, veg, protein, drink, profile) {
@@ -490,10 +506,11 @@ const issues = getMealIssues({
   return "Diet perlu penambahbaikan / 饮食需改善: " + issues.join(", ");
 }
   const saveMeal = async () => {
-
-  const { data: userData } = await supabase.auth.getUser();
-
-  const profile = await getUserProfile();
+if (!user?.id) {
+    alert("User not logged in");
+    return;
+  }
+const userId = user?.id;
 
   // =========================
   // ✅ HANDLE CARB (NORMAL vs OTHERS)
@@ -546,6 +563,7 @@ const mealScore = getMealScore(
 const { data: glucoseData } = await supabase
   .from("glucose_logs")
   .select("*")
+  .eq("user_id", user.id)
   .order("created_at", { ascending: false })
   .limit(10);
 
@@ -570,7 +588,7 @@ console.log("AFTER:", after);
   let alerts = [];
 
   if (before) {
-    if (before.value > 7) {
+    if (before.glucose_value > 7) {
       alerts.push("High Fasting / 餐前偏高");
     } else {
       alerts.push("Fasting OK / 餐前正常");
@@ -578,7 +596,7 @@ console.log("AFTER:", after);
   }
 
   if (after) {
-    if (after.value > 8.5) {
+    if (after.glucose_value > 8.5) {
       alerts.push("High Post Meal / 餐后偏高");
     } else {
       alerts.push("Post Meal OK / 餐后正常");
@@ -586,7 +604,7 @@ console.log("AFTER:", after);
   }
 
   if (before && after) {
-    const diff = after.value - before.value;
+    const diff = after.glucose_value - before.glucose_value;
     if (diff >= 3) {
       alerts.push("Spike / 血糖升高");
     }
@@ -656,7 +674,7 @@ if (existingMeal) {
 } else {
   // ➕ INSERT MODE (your original code)
   result = await supabase.from("meals").insert([{
-    user_id: userData.user.id,
+    user_id: userId,
     meal_type: mealType,
     date,
     time,
@@ -707,18 +725,21 @@ if (result.error) {
 setLastScore(mealScore);
 
 // 🔁 refresh dashboard
-refresh();
-
+if (refresh) {
+  refresh();
+}
 // 🔙 exit edit mode
 if (onSave) onSave();
 };
-
+if (!existingMeal) {
+  resetForm();
+}
   return (
     <div>
 
-       <button onClick={handleLogout}>
-      Logout / 登出
-    </button>
+      <button onClick={handleLogout} disabled={loggingOut}>
+  {loggingOut ? "Logging out..." : "Logout / 登出"}
+</button>
     
       <h3>Tambah Hidangan / 添加餐点</h3>
 
