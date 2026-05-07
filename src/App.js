@@ -70,7 +70,7 @@ useEffect(() => {
 
     navigate("/reset-password");   // ✅ redirect
   }
-}, []);
+}, [navigate]);
 
   // 🔹 Listen to login/logout changes
 useEffect(() => {
