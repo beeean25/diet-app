@@ -310,7 +310,35 @@ const saveInlineEdit = async () => {
     alert(error.message);
     return;
   }
+if (before?.id && editingMeal.before_value) {
 
+  await supabase
+    .from("glucose_logs")
+    .update({
+      glucose_value: editingMeal.before_value
+    })
+    .eq("id", before.id);
+}
+
+if (after?.id && editingMeal.after_value) {
+
+  await supabase
+    .from("glucose_logs")
+    .update({
+      glucose_value: editingMeal.after_value
+    })
+    .eq("id", after.id);
+}
+
+if (fasting?.id && editingMeal.fasting_value) {
+
+  await supabase
+    .from("glucose_logs")
+    .update({
+      glucose_value: editingMeal.fasting_value
+    })
+    .eq("id", fasting.id);
+}
   alert("Updated / 已更新");
 
   setEditingMeal(null);
@@ -624,29 +652,89 @@ const saveInlineEdit = async () => {
       {/* ✅ FINAL STEP */}
      <p>
   Gula puasa / 空腹血糖:{" "}
-  <strong style={{ color: getColor(fastingStatus) }}>
-    {fasting
-      ? `${fasting.glucose_value} (${fastingStatus})`
-      : "Tiada / 无"}
-  </strong>
+
+  {isEditing ? (
+
+    <input
+      type="number"
+      step="0.1"
+      value={editingMeal.fasting_value || fasting?.glucose_value || ""}
+      onChange={(e) =>
+        setEditingMeal({
+          ...editingMeal,
+          fasting_value: e.target.value
+        })
+      }
+      style={{ width: 80 }}
+    />
+
+  ) : (
+
+    <strong style={{ color: getColor(fastingStatus) }}>
+      {fasting
+        ? `${fasting.glucose_value} (${fastingStatus})`
+        : "Tiada / 无"}
+    </strong>
+
+  )}
 </p>
 
 <p>
   Gula sebelum makan / 餐前血糖:{" "}
-  <strong style={{ color: getColor(beforeStatus) }}>
-    {before
-      ? `${before.glucose_value} (${beforeStatus})`
-      : "Tiada / 无"}
-  </strong>
+
+  {isEditing ? (
+
+    <input
+      type="number"
+      step="0.1"
+      value={editingMeal.before_value || before?.glucose_value || ""}
+      onChange={(e) =>
+        setEditingMeal({
+          ...editingMeal,
+          before_value: e.target.value
+        })
+      }
+      style={{ width: 80 }}
+    />
+
+  ) : (
+
+    <strong style={{ color: getColor(beforeStatus) }}>
+      {before
+        ? `${before.glucose_value} (${beforeStatus})`
+        : "Tiada / 无"}
+    </strong>
+
+  )}
 </p>
 
 <p>
-  Gula selepas makan / 餐后血糖:{" "}
-  <strong style={{ color: getColor(afterStatus) }}>
-    {after
-      ? `${after.glucose_value} (${afterStatus})`
-      : "Tiada / 无"}
-  </strong>
+  Gula sebelum makan / 餐前血糖:{" "}
+
+  {isEditing ? (
+
+    <input
+      type="number"
+      step="0.1"
+      value={editingMeal.before_value || before?.glucose_value || ""}
+      onChange={(e) =>
+        setEditingMeal({
+          ...editingMeal,
+          before_value: e.target.value
+        })
+      }
+      style={{ width: 80 }}
+    />
+
+  ) : (
+
+    <strong style={{ color: getColor(beforeStatus) }}>
+      {before
+        ? `${before.glucose_value} (${beforeStatus})`
+        : "Tiada / 无"}
+    </strong>
+
+  )}
 </p>
      
 <p>
