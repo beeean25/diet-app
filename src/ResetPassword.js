@@ -1,24 +1,51 @@
 import { useState } from "react";
 import { supabase } from "./supabaseClient";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 export default function ResetPassword() {
   const [password, setPassword] = useState("");
     const navigate = useNavigate();
+ useEffect(() => {
+    const handleSession = async () => {
+      console.log("🔐 Checking recovery session...");
+
+      const { data, error } = await supabase.auth.getSession();
+
+      console.log("SESSION:", data, error);
+
+      if (!data?.session) {
+        console.log("❌ No session — reset will fail");
+      }
+    };
+
+    handleSession();
+  }, []);
+
   const updatePassword = async () => {
-    const { error } = await supabase.auth.updateUser({
-      password: password
-    });
+  console.log("🚀 Update clicked");
 
-    if (error) {
-      alert(error.message);
-    } else {
-      alert("Password updated! Please login again.");
-      await supabase.auth.signOut();
+  if (!password) {
+    alert("Please enter password");
+    return;
+  }
 
-      navigate("/login");   // ✅ React Router navigation
-    }
-  };
+  const { data, error } = await supabase.auth.updateUser({
+    password: password
+  });
+
+  console.log("RESULT:", data);
+  console.log("ERROR:", error);
+
+  if (error) {
+    alert(error.message);
+  } else {
+    alert("Password updated! Please login again.");
+    await supabase.auth.signOut();
+
+    navigate("/login");
+  }
+};
 
 
   return (
