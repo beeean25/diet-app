@@ -361,7 +361,10 @@ const { error } = await supabase
     alert(error.message);
     return;
   }
-if (before?.id && editingMeal.before_value) {
+if (
+  before?.id &&
+  editingMeal.before_value !== undefined
+) {
 
   await supabase
     .from("glucose_logs")
@@ -375,7 +378,10 @@ if (before?.id && editingMeal.before_value) {
     .eq("id", before.id);
 }
 
-if (after?.id && editingMeal.after_value) {
+if (
+  after?.id &&
+  editingMeal.after_value !== undefined
+) {
 
   await supabase
     .from("glucose_logs")
@@ -389,9 +395,12 @@ glucose_flag: detectGlucoseStatus(
     .eq("id", after.id);
 }
 
-if (fasting?.id && editingMeal.fasting_value) {
+if (
+  fasting?.id &&
+  editingMeal.fasting_value !== undefined
+) {
 
-  await supabase
+const { error: glucoseError } = await supabase
     .from("glucose_logs")
     .update({
       glucose_value: editingMeal.fasting_value,
@@ -401,6 +410,9 @@ glucose_flag: detectGlucoseStatus(
 )
     })
     .eq("id", fasting.id);
+    if (glucoseError) {
+  console.log("GLUCOSE UPDATE ERROR:", glucoseError);
+}
 }
   alert("Updated / 已更新");
 
