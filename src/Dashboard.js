@@ -299,6 +299,24 @@ const totalExchange =
   (meal.carb_exchange || 0) + (meal.fruit_exchange || 0);
 
 const maxCarb = profile?.carb_max || 3;
+const saveInlineEdit = async () => {
+
+  const { error } = await supabase
+    .from("meals")
+    .update(editingMeal)
+    .eq("id", editingMeal.id);
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  alert("Updated / 已更新");
+
+  setEditingMeal(null);
+
+  fetchMeals();
+};
   return (
     <div
       key={meal.id}
@@ -587,6 +605,22 @@ const maxCarb = profile?.carb_max || 3;
     ? "⚠ Melebihi had / 超出目标"
     : "✅ Dalam had / 在目标内"}
 </p>
+{isEditing && (
+  <div style={{ marginTop: 10, marginBottom: 10 }}>
+
+    <button onClick={saveInlineEdit}>
+      💾 Save
+    </button>
+
+    <button
+      onClick={() => setEditingMeal(null)}
+      style={{ marginLeft: 10 }}
+    >
+      ❌ Cancel
+    </button>
+
+  </div>
+)}
       {/* ✅ FINAL STEP */}
      <p>
   Gula puasa / 空腹血糖:{" "}
@@ -629,15 +663,6 @@ const maxCarb = profile?.carb_max || 3;
     </div>
   );
 })}
-{editingMeal && (
-  <AddMeal
-    user={user}
-    profile={profile} 
-    existingMeal={editingMeal}
-    refresh={fetchMeals}
-    onSave={() => setEditingMeal(null)}
-  />
-)}
     </div>
   );
 }
