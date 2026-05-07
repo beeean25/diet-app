@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "./supabaseClient";
-import { useNavigate } from "react-router-dom";
 
 export default function Profile({ user }) {
-const navigate = useNavigate();
   const [carbMax, setCarbMax] = useState("");
   const [vegTarget, setVegTarget] = useState("");
 const [requireProtein, setRequireProtein] = useState(true);
@@ -73,7 +71,7 @@ const saveProfile = async () => {
 
   alert("Profile saved");
 
-  navigate("/dashboard");   // ✅ ONLY after success
+  window.location.href = "/dashboard";  // ✅ ONLY after success
 };
 
   if (loading) return <p>Loading profile...</p>;
