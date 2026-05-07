@@ -42,8 +42,9 @@ export default function ResetPassword() {
   } else {
     alert("Password updated! Please login again.");
     await supabase.auth.signOut();
-
+    setTimeout(() => {
     navigate("/login");
+    }, 300);
   }
 };
 
