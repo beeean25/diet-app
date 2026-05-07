@@ -40,13 +40,20 @@ useEffect(() => {
 }, [user]);
 
   // 🔹 Save profile
-  const saveProfile = async () => {
+const saveProfile = async () => {
+  console.log("🚀 SAVE CLICKED");
+
+  if (!user?.id) {
+    alert("User not found");
+    return;
+  }
+
   if (!carbMax) {
     alert("Please enter carb limit / 请输入碳水上限");
     return;
   }
 
-  await supabase.from("profile").upsert([
+  const { data, error } = await supabase.from("profile").upsert([
     {
       id: user.id,
       carb_max: Number(carbMax),
@@ -56,8 +63,17 @@ useEffect(() => {
     }
   ]);
 
- alert("Profile saved");
-navigate("/dashboard");   // 🔥 go to dashboard
+  console.log("RESULT:", data);
+  console.log("ERROR:", error);
+
+  if (error) {
+    alert(error.message);
+    return;   // ❗ STOP here if error
+  }
+
+  alert("Profile saved");
+
+  navigate("/dashboard");   // ✅ ONLY after success
 };
 
   if (loading) return <p>Loading profile...</p>;
