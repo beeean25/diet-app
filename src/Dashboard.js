@@ -301,11 +301,18 @@ const totalExchange =
 const maxCarb = profile?.carb_max || 3;
 const saveInlineEdit = async () => {
 
-  const { error } = await supabase
-    .from("meals")
-    .update(editingMeal)
-    .eq("id", editingMeal.id);
+  const {
+  before_value,
+  after_value,
+  fasting_value,
+  ...mealData
+} = editingMeal;
 
+const { error } = await supabase
+  .from("meals")
+  .update(mealData)
+  .eq("id", editingMeal.id);
+  
   if (error) {
     alert(error.message);
     return;
