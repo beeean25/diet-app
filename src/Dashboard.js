@@ -112,8 +112,7 @@ console.log("SAME DAY LOGS:", sameDayLogs);
   // BEFORE candidates
   const beforeCandidates = sameDayLogs.filter((g) =>
   g.timing?.toLowerCase().includes("sebelum") ||
-  g.timing?.toLowerCase().includes("before") ||
-  g.timing?.toLowerCase().includes("puasa")
+  g.timing?.toLowerCase().includes("before")
 );
 
   let before = null;
@@ -151,17 +150,22 @@ afterCandidates.forEach((g) => {
 });
 console.log("AFTER CANDIDATES:", afterCandidates);
   const fastingCandidates = sameDayLogs.filter(
-    (g) =>
-      g.timing === "fasting" ||
-      g.timing?.toLowerCase().includes("puasa")
-  );
+  (g) =>
+    g.timing?.toLowerCase().includes("puasa")
+);
 
   const fasting = fastingCandidates[0]; 
 console.log("SELECTED BEFORE:", before);
 console.log("SELECTED AFTER:", after);
 console.log("=== DEBUG END ===");
+
+console.log("FINAL BEFORE:", before?.id);
+console.log("FINAL AFTER:", after?.id);
+console.log("FINAL FASTING:", fasting?.id);
+
   return { before, after, fasting };
 }
+
   // 📈 FILTERED GLUCOSE DATA
 const glucoseChartData = [
   // 🔵 glucose data
