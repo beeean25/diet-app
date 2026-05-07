@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "./supabaseClient";
 import { Routes, Route, Navigate } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
 import Login from "./Login";
 import Dashboard from "./Dashboard";
 import Profile from "./Profile";
@@ -12,7 +11,6 @@ function App() {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
 const [initialized, setInitialized] = useState(false);
-const navigate = useNavigate();
 const isProfileComplete = (profile) => {
     if (!profile) return false;
 
@@ -62,28 +60,6 @@ useEffect(() => {
   init();
 }, []);
 
-useEffect(() => {
-  const handleRecovery = async () => {
-    const hash = window.location.hash;
-
-    if (hash.includes("type=recovery")) {
-      console.log("🔐 Recovery detected");
-
-      // wait for session to be ready
-      const { data } = await supabase.auth.getSession();
-
-      if (data?.session) {
-        window.history.replaceState(null, "", "/reset-password");
-        navigate("/reset-password");
-      } else {
-        console.log("⚠️ No session yet, retry...");
-      }
-    }
-  };
-
-  handleRecovery();
-}, [navigate]);
-
   // 🔹 Listen to login/logout changes
 useEffect(() => {
   const { data: listener } = supabase.auth.onAuthStateChange(
@@ -126,6 +102,13 @@ console.log("HASH:", window.location.hash);
   profile
 });
 if (loading) return <p>Loading...</p>;
+
+const hash = window.location.hash;
+
+if (hash.includes("type=recovery")) {
+  console.log("🔐 Rendering ResetPassword directly");
+  return <ResetPassword />;
+}
 
 return (
   <Routes>
