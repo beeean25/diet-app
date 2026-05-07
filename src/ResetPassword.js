@@ -5,6 +5,7 @@ import { useEffect } from "react";
 
 export default function ResetPassword() {
   const [password, setPassword] = useState("");
+  const [updating, setUpdating] = useState(false);
     const navigate = useNavigate();
  useEffect(() => {
     const handleSession = async () => {
@@ -23,10 +24,17 @@ export default function ResetPassword() {
   }, []);
 
   const updatePassword = async () => {
+
+  // 🚫 prevent double execution
+  if (updating) return;
+
+  setUpdating(true);
+
   console.log("🚀 Update clicked");
 
   if (!password) {
     alert("Please enter password");
+    setUpdating(false);
     return;
   }
 
@@ -38,14 +46,22 @@ export default function ResetPassword() {
   console.log("ERROR:", error);
 
   if (error) {
-    alert(error.message);
-  } else {
-    alert("Password updated! Please login again.");
+  alert(error.message);
+  setUpdating(false);
+
+} else {
+
+  alert("Password updated! Please login again.");
+
+  // ⏳ wait for Supabase auth lock release
+  setTimeout(async () => {
+
     await supabase.auth.signOut();
-    setTimeout(() => {
+
     navigate("/login");
-    }, 300);
-  }
+
+  }, 1000);
+}
 };
 
 
@@ -61,9 +77,12 @@ export default function ResetPassword() {
 
       <br /><br />
 
-      <button onClick={updatePassword}>
-        Update Password
-      </button>
+      <button
+  onClick={updatePassword}
+  disabled={updating}
+>
+  {updating ? "Updating..." : "Update Password"}
+</button>
     </div>
   );
 }
