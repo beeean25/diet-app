@@ -377,7 +377,12 @@ if (
     })
     .eq("id", before.id);
 }
-
+console.log(
+  "UPDATED BEFORE:",
+  editingMeal.before_value,
+  "ROW:",
+  before.id
+);
 if (
   after?.id &&
   editingMeal.after_value !== undefined
@@ -394,7 +399,12 @@ glucose_flag: detectGlucoseStatus(
 })
     .eq("id", after.id);
 }
-
+console.log(
+  "UPDATED AFTER:",
+  editingMeal.after_value,
+  "ROW:",
+  before.id
+);
 if (
   fasting?.id &&
   editingMeal.fasting_value !== undefined
@@ -410,18 +420,22 @@ glucose_flag: detectGlucoseStatus(
 )
     })
     .eq("id", fasting.id);
+console.log(
+  "UPDATED FASTING:",
+  editingMeal.fasting_value,
+  "ROW:",
+  fasting.id
+);
     if (glucoseError) {
   console.log("GLUCOSE UPDATE ERROR:", glucoseError);
 }
 }
   alert("Updated / 已更新");
 
-  setEditingMeal(null);
+  await fetchGlucose();
+await fetchMeals();
 
-setTimeout(() => {
-  fetchMeals();
-  fetchGlucose();
-}, 300);
+setEditingMeal(null);
 };
   return (
     <div
