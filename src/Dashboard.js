@@ -366,29 +366,39 @@ const { error } = await supabase
     return;
   }
 if (
-  before?.id &&
+  before &&
+  before.id &&
   editingMeal.before_value !== undefined
 ) {
 
-  await supabase
+  const { error: glucoseError } = await supabase
     .from("glucose_logs")
     .update({
       glucose_value: editingMeal.before_value,
-    glucose_flag: detectGlucoseStatus(
-      editingMeal.before_value,
-      before.timing
-    )
+      glucose_flag: detectGlucoseStatus(
+        editingMeal.before_value,
+        before.timing
+      )
     })
     .eq("id", before.id);
+
+  console.log(
+    "UPDATED BEFORE:",
+    editingMeal.before_value,
+    "ROW:",
+    before.id
+  );
+
+  if (glucoseError) {
+    console.log(
+      "GLUCOSE UPDATE ERROR:",
+      glucoseError
+    );
+  }
 }
-console.log(
-  "UPDATED BEFORE:",
-  editingMeal.before_value,
-  "ROW:",
-  before.id
-);
 if (
-  after?.id &&
+  after &&
+  after.id &&
   editingMeal.after_value !== undefined
 ) {
 
@@ -407,10 +417,11 @@ console.log(
   "UPDATED AFTER:",
   editingMeal.after_value,
   "ROW:",
-  before.id
+  after.id
 );
 if (
-  fasting?.id &&
+  fasting &&
+  fasting.id &&
   editingMeal.fasting_value !== undefined
 ) {
 
@@ -857,7 +868,22 @@ setEditingMeal(null);
     {meal.meal_score || "Tiada / 无"}
   </strong>
 </p>
-<button onClick={() => setEditingMeal(meal)}>
+<button
+  onClick={() =>
+    setEditingMeal({
+      ...meal,
+
+      before_value:
+        before?.glucose_value ?? "",
+
+      after_value:
+        after?.glucose_value ?? "",
+
+      fasting_value:
+        fasting?.glucose_value ?? ""
+    })
+  }
+>
   ✏️ Edit
 </button>
     </div>
