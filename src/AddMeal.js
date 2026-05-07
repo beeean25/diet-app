@@ -226,7 +226,7 @@ const carbGroupMap = {
 
   // 🫓 ROTI CANAI + CHAPATI
   "Roti Canai / 印度煎饼": "roti",
-  "Chapati / 印度薄饼": "roti",
+  "Chapati / Thosai 印度薄饼": "roti",
 
   // 🍥 PUTU MAYAM + IDLI
   "Putu Mayam / 米线饼": "idli",
@@ -280,7 +280,7 @@ const carbExchangeByGroup = {
 
   // 🫓 roti canai / chapati
   roti: {
-    "1/2 keping / 1/2片": 1,
+    "1/2 keping / 半片": 1,
     "1 keping / 1片": 2,
     "2 keping / 2片": 4
   },
