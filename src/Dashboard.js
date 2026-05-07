@@ -5,7 +5,8 @@ import AddMeal, {
   fruitMap,
   fruitExchangeMap,
   proteinMap,
-  drinkOptions
+  drinkOptions,
+  calculateCarbExchange
 } from "./AddMeal";
 import GlucoseForm from "./GlucoseForm";
 import {
@@ -275,9 +276,10 @@ const liveCarbExchange =
   isEditing &&
   editingMeal.carb_food &&
   editingMeal.carb_portion
-    ? carbMap?.[editingMeal.carb_food]?.[
+    ? calculateCarbExchange(
+        editingMeal.carb_food,
         editingMeal.carb_portion
-      ] || 0
+      )
     : meal.carb_exchange || 0;  
 const liveFruitExchange =
   isEditing && editingMeal.fruit && editingMeal.fruit_portion
@@ -311,7 +313,7 @@ const totalExchange =
   (isEditing
     ? liveFruitExchange
     : (meal.fruit_exchange || 0));
-    
+
 const maxCarb = profile?.carb_max || 3;
 const saveInlineEdit = async () => {
 
@@ -323,10 +325,10 @@ const mealData = {
   carb_food: editingMeal.carb_food,
   carb_portion: editingMeal.carb_portion,
 
-  carb_exchange:
-    carbMap?.[editingMeal.carb_food]?.[
-      editingMeal.carb_portion
-    ] || meal.carb_exchange,
+  carb_exchange: calculateCarbExchange(
+  editingMeal.carb_food,
+  editingMeal.carb_portion
+),
 
   protein_food: editingMeal.protein_food,
   protein_portion: editingMeal.protein_portion,

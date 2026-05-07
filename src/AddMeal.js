@@ -209,97 +209,6 @@ export const fruitExchangeMap = {
     "Teh/Kopi 1 sudu besar gula / 1汤匙糖","Teh/Kopi 2 sudu besar gula / 2汤匙糖",
     "Minuman coklat / 巧克力饮料","Susu kosong / 牛奶","Susu berperisa / 调味奶","Lain-lain / 其他"
   ];
-export default function AddMeal({ 
-  user, 
-  profile, 
-  refresh, 
-  existingMeal, 
-  onSave }){
-  const [loggingOut, setLoggingOut] = useState(false);
-  const navigate = useNavigate();
-  const [mealType, setMealType] = useState("Sarapan pagi （早餐）");
-  const [date, setDate] = useState("");
-  const [time, setTime] = useState("");
-
-  const [carbFood, setCarbFood] = useState("None");
-  const [carbPortion, setCarbPortion] = useState("None");
-  const [carbOtherFood, setCarbOtherFood] = useState("");
-  const [carbOtherPortion, setCarbOtherPortion] = useState("");
-
-  const [proteinFood, setProteinFood] = useState("None");
-  const [proteinPortion, setProteinPortion] = useState("None");
-  const [proteinOtherFood, setProteinOtherFood] = useState("");
-  const [proteinOtherPortion, setProteinOtherPortion] = useState("");
-
-  const [vegPortion, setVegPortion] = useState("None");
-  const [vegOther, setVegOther] = useState("");
-
-  const [drink, setDrink] = useState("None");
-  const [drinkOther, setDrinkOther] = useState("");
-
-  const [fruit, setFruit] = useState("None");
-const [fruitPortion, setFruitPortion] = useState("None");
-const [fruitOtherPortion, setFruitOtherPortion] = useState("");
-  const [fruitOther, setFruitOther] = useState("");
-
-  const [lastScore, setLastScore] = useState("");
-  // 🔄 Reset form after save
-const resetForm = () => {
-  setMealType("");
-  setCarbFood("");
-  setCarbPortion("");
-  setProteinFood("");
-  setProteinPortion("");
-  setVegPortion("");
-  setFruit("None");
-  setFruitPortion("");
-  setDrink("");
-
-  // optional fields (if you have them)
-  setProteinOtherFood("");
-  setProteinOtherPortion("");
-  setVegOther("");
-  setFruitOther("");
-  setFruitOtherPortion("");
-  setDrinkOther("");
-
-  setLastScore(null);
-};
-useEffect(() => {
-  if (existingMeal) {
-    setMealType(existingMeal.meal_type || "");
-    setDate(existingMeal.date || "");
-    setTime(existingMeal.time || "");
-
-    setCarbFood(existingMeal.carb_food || "None");
-    setCarbPortion(existingMeal.carb_portion || "None");
-
-    setProteinFood(existingMeal.protein_food || "None");
-    setProteinPortion(existingMeal.protein_portion || "None");
-
-    setVegPortion(existingMeal.veg_portion || "None");
-
-    setDrink(existingMeal.drink || "None");
-
-    setFruit(existingMeal.fruit || "None");
-    setFruitPortion(existingMeal.fruit_portion || "None");
-  }
-}, [existingMeal]);
-
-  const handleLogout = async () => {
-  setLoggingOut(true);
-
-  const { error } = await supabase.auth.signOut();
-
-  if (error) {
-    alert(error.message);
-    setLoggingOut(false);
-  } else {
-   navigate("/login");   // 👈 ADD HERE
-  }
-  setLoggingOut(false); 
-};
-
 const carbGroupMap = {
 
   // 🍚 RICE GROUP (exclude porridge)
@@ -431,7 +340,8 @@ const carbExchangeByGroup = {
     "2 cawan / 2杯": 4
   }
   
-};function calculateCarbExchange(carb_food, carb_portion) {
+};
+export function calculateCarbExchange(carb_food, carb_portion) {
   console.log("======== DEBUG START ========");
   console.log("FOOD RAW:", carb_food);
   console.log("PORTION RAW:", carb_portion);
@@ -458,6 +368,97 @@ const carbExchangeByGroup = {
 
   return value || 0;
 }
+export default function AddMeal({ 
+  user, 
+  profile, 
+  refresh, 
+  existingMeal, 
+  onSave }){
+  const [loggingOut, setLoggingOut] = useState(false);
+  const navigate = useNavigate();
+  const [mealType, setMealType] = useState("Sarapan pagi （早餐）");
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
+
+  const [carbFood, setCarbFood] = useState("None");
+  const [carbPortion, setCarbPortion] = useState("None");
+  const [carbOtherFood, setCarbOtherFood] = useState("");
+  const [carbOtherPortion, setCarbOtherPortion] = useState("");
+
+  const [proteinFood, setProteinFood] = useState("None");
+  const [proteinPortion, setProteinPortion] = useState("None");
+  const [proteinOtherFood, setProteinOtherFood] = useState("");
+  const [proteinOtherPortion, setProteinOtherPortion] = useState("");
+
+  const [vegPortion, setVegPortion] = useState("None");
+  const [vegOther, setVegOther] = useState("");
+
+  const [drink, setDrink] = useState("None");
+  const [drinkOther, setDrinkOther] = useState("");
+
+  const [fruit, setFruit] = useState("None");
+const [fruitPortion, setFruitPortion] = useState("None");
+const [fruitOtherPortion, setFruitOtherPortion] = useState("");
+  const [fruitOther, setFruitOther] = useState("");
+
+  const [lastScore, setLastScore] = useState("");
+  // 🔄 Reset form after save
+const resetForm = () => {
+  setMealType("");
+  setCarbFood("");
+  setCarbPortion("");
+  setProteinFood("");
+  setProteinPortion("");
+  setVegPortion("");
+  setFruit("None");
+  setFruitPortion("");
+  setDrink("");
+
+  // optional fields (if you have them)
+  setProteinOtherFood("");
+  setProteinOtherPortion("");
+  setVegOther("");
+  setFruitOther("");
+  setFruitOtherPortion("");
+  setDrinkOther("");
+
+  setLastScore(null);
+};
+useEffect(() => {
+  if (existingMeal) {
+    setMealType(existingMeal.meal_type || "");
+    setDate(existingMeal.date || "");
+    setTime(existingMeal.time || "");
+
+    setCarbFood(existingMeal.carb_food || "None");
+    setCarbPortion(existingMeal.carb_portion || "None");
+
+    setProteinFood(existingMeal.protein_food || "None");
+    setProteinPortion(existingMeal.protein_portion || "None");
+
+    setVegPortion(existingMeal.veg_portion || "None");
+
+    setDrink(existingMeal.drink || "None");
+
+    setFruit(existingMeal.fruit || "None");
+    setFruitPortion(existingMeal.fruit_portion || "None");
+  }
+}, [existingMeal]);
+
+  const handleLogout = async () => {
+  setLoggingOut(true);
+
+  const { error } = await supabase.auth.signOut();
+
+  if (error) {
+    alert(error.message);
+    setLoggingOut(false);
+  } else {
+   navigate("/login");   // 👈 ADD HERE
+  }
+  setLoggingOut(false); 
+};
+
 // =========================
 // 🚦 CUSTOM MEAL SCORING (ADVANCED)
 // =========================
