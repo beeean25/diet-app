@@ -301,18 +301,46 @@ const totalExchange =
 const maxCarb = profile?.carb_max || 3;
 const saveInlineEdit = async () => {
 
-  const {
-  before_value,
-  after_value,
-  fasting_value,
-  ...mealData
-} = editingMeal;
+const mealData = {
+  meal_type: editingMeal.meal_type,
+  date: editingMeal.date,
+  time: editingMeal.time,
+
+  carb_food: editingMeal.carb_food,
+  carb_portion: editingMeal.carb_portion,
+
+  carb_exchange:
+    carbMap?.[editingMeal.carb_food]?.[
+      editingMeal.carb_portion
+    ] || meal.carb_exchange,
+
+  protein_food: editingMeal.protein_food,
+  protein_portion: editingMeal.protein_portion,
+
+  veg_portion:
+    editingMeal.veg_portion === "Lain-lain / 其他"
+      ? editingMeal.veg_other
+      : editingMeal.veg_portion,
+
+  fruit: editingMeal.fruit,
+  fruit_portion: editingMeal.fruit_portion,
+
+  fruit_exchange:
+    fruitExchangeMap?.[editingMeal.fruit]?.[
+      editingMeal.fruit_portion
+    ] || 0,
+
+  drink:
+    editingMeal.drink === "Lain-lain / 其他"
+      ? editingMeal.drink_other
+      : editingMeal.drink
+};
 
 const { error } = await supabase
   .from("meals")
   .update(mealData)
   .eq("id", editingMeal.id);
-  
+
   if (error) {
     alert(error.message);
     return;
@@ -351,6 +379,7 @@ if (fasting?.id && editingMeal.fasting_value) {
   setEditingMeal(null);
 
   fetchMeals();
+  fetchGlucose();
 };
   return (
     <div
