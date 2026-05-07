@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "./supabaseClient";
 import { Routes, Route, Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Login from "./Login";
 import Dashboard from "./Dashboard";
 import Profile from "./Profile";
@@ -11,6 +12,7 @@ function App() {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
 const [initialized, setInitialized] = useState(false);
+const navigate = useNavigate();
 const isProfileComplete = (profile) => {
     if (!profile) return false;
 
@@ -58,6 +60,16 @@ useEffect(() => {
   };
 
   init();
+}, []);
+
+useEffect(() => {
+  const hash = window.location.hash;
+
+  if (hash.includes("type=recovery")) {
+    console.log("🔐 Recovery detected");
+
+    navigate("/reset-password");   // ✅ redirect
+  }
 }, []);
 
   // 🔹 Listen to login/logout changes
