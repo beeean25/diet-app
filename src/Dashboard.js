@@ -184,7 +184,7 @@ const glucoseChartData = [
     .filter((m) => (selectedDate ? m.date === selectedDate : true))
     .map((m) => ({
       time: m.time.slice(0, 5),
-      value: 0,
+      value: null,
       type: "meal",
       mealMarker: true
     }))
@@ -262,6 +262,7 @@ console.log("CHART TIMES:", glucoseChartData.map(d => d.time));
   type="monotone"
   dataKey="value"
   stroke="#8884d8"
+  connectNulls
    dot={{ r: 4 }}
 />
     </LineChart>
