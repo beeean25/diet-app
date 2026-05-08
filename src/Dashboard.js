@@ -356,11 +356,22 @@ const mealData = {
       : editingMeal.drink
 };
 
-const { error } = await supabase
+const { data: mealUpdateData, error } = await supabase
   .from("meals")
   .update(mealData)
-  .eq("id", editingMeal.id);
+  .eq("id", editingMeal.id)
+  .select();
 
+console.log(
+  "MEAL UPDATE DATA:",
+  mealUpdateData
+);
+
+console.log(
+  "MEAL UPDATE ERROR:",
+  error
+);
+console.log("REACHED AFTER MEAL UPDATE");
   if (error) {
     alert(error.message);
     return;
