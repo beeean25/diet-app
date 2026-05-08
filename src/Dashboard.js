@@ -29,7 +29,7 @@ const [selectedDate, setSelectedDate] = useState("");
     console.log("🚀 fetchMeals START");
     const { data,error } = await supabase
       .from("meals")
-      .select("id, meal_type, date, time, glucose_flag, carb_food, carb_portion, carb_exchange, protein_food, protein_portion, veg_portion, fruit, fruit_portion, fruit_exchange, drink, meal_score")
+      .select("id, meal_type, date, time, glucose_flag, carb_food, carb_portion, carb_exchange, protein_food, protein_portion, veg_portion, fruit, fruit_portion, fruit_exchange, total_exchange, drink, meal_score")
       .eq("user_id", user?.id)
       .order("date", { ascending: false });
        console.log("📦 DATA:", data);
@@ -274,7 +274,9 @@ console.log("CHART TIMES:", glucoseChartData.map(d => d.time));
           stroke="red"
           strokeWidth={2}     // 👈 ADD THIS
           label={{
-          value: `${meal.meal_type || ""} (${meal.total_exchange || 0} EX)`,
+          value: `${meal.meal_type || ""} (${Number(meal.carb_exchange || 0) +
+        Number(meal.fruit_exchange || 0)
+        } EX)`,
           position: "insideTop",
          fill: "red",
          fontSize: 11
