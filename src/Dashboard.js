@@ -371,29 +371,23 @@ if (
   editingMeal.before_value !== undefined
 ) {
 
-  const { error: glucoseError } = await supabase
+  const { data, error } = await supabase
     .from("glucose_logs")
     .update({
-      glucose_value: editingMeal.before_value,
+      glucose_value: Number(editingMeal.before_value),
       glucose_flag: detectGlucoseStatus(
         editingMeal.before_value,
         before.timing
       )
     })
-    .eq("id", before.id);
+    .eq("id", before.id)
+    .select();
 
-  console.log(
-    "UPDATED BEFORE:",
-    editingMeal.before_value,
-    "ROW:",
-    before.id
-  );
+  console.log("BEFORE UPDATE DATA:", data);
+  console.log("BEFORE UPDATE ERROR:", error);
 
-  if (glucoseError) {
-    console.log(
-      "GLUCOSE UPDATE ERROR:",
-      glucoseError
-    );
+  if (error) {
+    alert(error.message);
   }
 }
 if (
@@ -402,48 +396,50 @@ if (
   editingMeal.after_value !== undefined
 ) {
 
-  await supabase
+  const { data, error } = await supabase
     .from("glucose_logs")
     .update({
-      glucose_value: editingMeal.after_value,
-glucose_flag: detectGlucoseStatus(
-  editingMeal.after_value,
-  after.timing
-)
-})
-    .eq("id", after.id);
+      glucose_value: Number(editingMeal.after_value),
+
+      glucose_flag: detectGlucoseStatus(
+        editingMeal.after_value,
+        after.timing
+      )
+    })
+    .eq("id", after.id)
+    .select();
+
+  console.log("AFTER UPDATE DATA:", data);
+  console.log("AFTER UPDATE ERROR:", error);
+
+  if (error) {
+    alert(error.message);
+  }
 }
-console.log(
-  "UPDATED AFTER:",
-  editingMeal.after_value,
-  "ROW:",
-  after.id
-);
 if (
   fasting &&
   fasting.id &&
   editingMeal.fasting_value !== undefined
 ) {
 
-const { error: glucoseError } = await supabase
+const { data, error } = await supabase
     .from("glucose_logs")
     .update({
-      glucose_value: editingMeal.fasting_value,
+      glucose_value: Number(editingMeal.fasting_value),
 glucose_flag: detectGlucoseStatus(
   editingMeal.fasting_value,
   fasting.timing
 )
     })
-    .eq("id", fasting.id);
-console.log(
-  "UPDATED FASTING:",
-  editingMeal.fasting_value,
-  "ROW:",
-  fasting.id
-);
-    if (glucoseError) {
-  console.log("GLUCOSE UPDATE ERROR:", glucoseError);
-}
+   .eq("id", fasting.id)
+    .select();
+
+  console.log("FASTING UPDATE DATA:", data);
+  console.log("FASTING UPDATE ERROR:", error);
+
+  if (error) {
+    alert(error.message);
+  }
 }
   alert("Updated / 已更新");
 
