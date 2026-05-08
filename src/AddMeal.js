@@ -789,9 +789,14 @@ if (existingMeal) {
 }
 
 if (result.error) {
+  console.log("SAVE ERROR:", result.error);
+
   alert(result.error.message);
+
   return;
 }
+console.log("SAVE SUCCESS");
+console.log(result);
 
 setLastScore(mealScore);
 
