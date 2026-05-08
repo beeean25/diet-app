@@ -65,6 +65,9 @@ useEffect(() => {
   const today = new Date().toISOString().split("T")[0];
   setSelectedDate(today);
 }, []);
+useEffect(() => {
+  console.log("UPDATED GLUCOSE LOGS:", glucoseLogs);
+}, [glucoseLogs]);
   // =========================
 // 🩸 GLUCOSE STATUS FUNCTION (ADD HERE)
 // =========================
@@ -73,8 +76,7 @@ function detectGlucoseStatus(value, timing) {
 
   const isBefore =
     timing === "before" ||
-    timing?.toLowerCase().includes("sebelum") ||
-    timing?.toLowerCase().includes("puasa");
+    timing?.toLowerCase().includes("sebelum");
 
   const isAfter =
     timing === "after" ||
@@ -182,8 +184,9 @@ const glucoseChartData = [
     .filter((m) => (selectedDate ? m.date === selectedDate : true))
     .map((m) => ({
       time: m.time.slice(0, 5),
-      value: null,
-      type: "meal"
+      value: 0,
+      type: "meal",
+      mealMarker: true
     }))
 ]
 .sort((a, b) =>
@@ -237,7 +240,10 @@ console.log("CHART TIMES:", glucoseChartData.map(d => d.time));
   <ResponsiveContainer width="100%" height={250}>
     <LineChart data={glucoseChartData}>
       <CartesianGrid strokeDasharray="3 3" />
-      <XAxis dataKey="time" />
+      <XAxis
+  dataKey="time"
+  allowDuplicatedCategory={false}
+/>
       <YAxis />
       <Tooltip />
 
@@ -256,7 +262,6 @@ console.log("CHART TIMES:", glucoseChartData.map(d => d.time));
   type="monotone"
   dataKey="value"
   stroke="#8884d8"
-  connectNulls   // ✅ ADD THIS
    dot={{ r: 4 }}
 />
     </LineChart>
@@ -459,8 +464,10 @@ glucose_flag: detectGlucoseStatus(
   await fetchGlucose();
 await fetchMeals();
 
-setEditingMeal(null);
-alert("Updated / 已更新");
+  setEditingMeal(null);
+
+  alert("Updated / 已更新");
+
 };
   return (
     <div
