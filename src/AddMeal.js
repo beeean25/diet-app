@@ -903,6 +903,8 @@ return (
         onChange={(e)=>setCarbOtherPortion(e.target.value)}
       />
     )}
+    </>
+)}
     <button
   type="button"
   onClick={() => setShowCarb2(true)}
@@ -991,8 +993,6 @@ return (
         </option>
       ))}
     </select>
-  </>
-)}
   </>
 )}
 
