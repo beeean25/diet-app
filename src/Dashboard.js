@@ -181,13 +181,26 @@ const glucoseChartData = [
 
   // 🔴 meal time (inject into chart)
   ...meals
-    .filter((m) => (selectedDate ? m.date === selectedDate : true))
-    .map((m) => ({
-      time: m.time.slice(0, 5),
-      value: null,
-      type: "meal",
-      mealMarker: true
-    }))
+  .filter((m) => (
+    selectedDate
+      ? m.date === selectedDate
+      : true
+  ))
+  .map((m) => ({
+    time: m.time.slice(0, 5),
+
+    value: null,
+
+    type: "meal",
+
+    mealMarker: true,
+
+    totalCarb:
+      Number(m.carb_exchange || 0) +
+      Number(m.fruit_exchange || 0),
+
+    mealType: m.meal_type
+  }))
 ]
 .sort((a, b) =>
   new Date(`2020-01-01T${a.time}`) -
@@ -254,7 +267,12 @@ console.log("CHART TIMES:", glucoseChartData.map(d => d.time));
           x={t}
           stroke="red"
           strokeWidth={2}     // 👈 ADD THIS
-          label={{ value: "🍽", position: "insideTop" }}
+          label={{
+          value: `${meals[i]?.meal_type || ""} (${meals[i]?.total_exchange || 0} EX)`,
+          position: "insideTop",
+         fill: "red",
+         fontSize: 11
+}}
         />
       ))}
 
