@@ -346,7 +346,9 @@ export function calculateCarbExchange(carb_food, carb_portion) {
   console.log("FOOD RAW:", carb_food);
   console.log("PORTION RAW:", carb_portion);
 
-  const group = carbGroupMap[carb_food];
+ const cleanFood = carb_food?.trim();
+
+const group = carbGroupMap[cleanFood];
   console.log("GROUP:", group);
 
   if (!group) {
@@ -357,10 +359,10 @@ export function calculateCarbExchange(carb_food, carb_portion) {
   const groupMap = carbExchangeByGroup[group];
   console.log("AVAILABLE PORTIONS:", Object.keys(groupMap));
 
-  const cleanPortion = carb_portion.trim();
+  const cleanPortion = carb_portion?.trim();
   console.log("TRY MATCH:", cleanPortion);
 
-  const value = groupMap[cleanPortion];
+  const value = groupMap?.[cleanPortion];
 
   console.log("RESULT:", value);
 
@@ -656,9 +658,22 @@ console.log("ALERTS:", alerts);
   glucoseFlag = alerts.join(" | ");
 }
 // 🧪 DEBUG HERE
-console.log("🍚 FINAL CARB EXCHANGE:", totalMainCarb);
-console.log("🍎 FRUIT EXCHANGE:", fruitCarb);
-console.log("🔥 TOTAL CARB:", totalCarb);
+console.log("carbFood:", carbFood);
+console.log("carbPortion:", carbPortion);
+console.log("carbExchange:", carbExchange);
+
+console.log("carbFood2:", carbFood2);
+console.log("carbPortion2:", carbPortion2);
+console.log("carbExchange2:", carbExchange2);
+
+console.log("carbFood3:", carbFood3);
+console.log("carbPortion3:", carbPortion3);
+console.log("carbExchange3:", carbExchange3);
+
+console.log("fruitCarb:", fruitCarb);
+
+console.log("totalMainCarb:", totalMainCarb);
+console.log("totalCarb:", totalCarb);
 
   // =========================
   // 💾 SAVE TO DATABASE
