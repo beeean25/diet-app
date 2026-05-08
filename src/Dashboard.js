@@ -455,12 +455,12 @@ glucose_flag: detectGlucoseStatus(
     alert(error.message);
   }
 }
-  alert("Updated / 已更新");
 
   await fetchGlucose();
 await fetchMeals();
 
 setEditingMeal(null);
+alert("Updated / 已更新");
 };
   return (
     <div
@@ -878,24 +878,26 @@ setEditingMeal(null);
     {meal.meal_score || "Tiada / 无"}
   </strong>
 </p>
-<button
-  onClick={() =>
-    setEditingMeal({
-      ...meal,
+{!isEditing && (
+  <button
+    onClick={() =>
+      setEditingMeal({
+        ...meal,
 
-      before_value:
-        before?.glucose_value ?? "",
+        before_value:
+          before?.glucose_value ?? "",
 
-      after_value:
-        after?.glucose_value ?? "",
+        after_value:
+          after?.glucose_value ?? "",
 
-      fasting_value:
-        fasting?.glucose_value ?? ""
-    })
-  }
->
-  ✏️ Edit
-</button>
+        fasting_value:
+          fasting?.glucose_value ?? ""
+      })
+    }
+  >
+    ✏️ Edit
+  </button>
+)}
     </div>
   );
 })}
