@@ -261,14 +261,20 @@ console.log("CHART TIMES:", glucoseChartData.map(d => d.time));
       <Tooltip />
 
       {/* 🔴 MEAL TIME MARKERS */}
-      {mealTimes.map((t, i) => (
-        <ReferenceLine
-          key={i}
-          x={t}
+      {meals
+  .filter((m) =>
+    selectedDate
+      ? m.date === selectedDate
+      : true
+  )
+  .map((meal, i) => (
+    <ReferenceLine
+      key={i}
+      x={meal.time.slice(0, 5)}
           stroke="red"
           strokeWidth={2}     // 👈 ADD THIS
           label={{
-          value: `${meals[i]?.meal_type || ""} (${meals[i]?.total_exchange || 0} EX)`,
+          value: `${meal.meal_type || ""} (${meal.total_exchange || 0} EX)`,
           position: "insideTop",
          fill: "red",
          fontSize: 11
