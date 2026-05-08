@@ -29,7 +29,38 @@ const [selectedDate, setSelectedDate] = useState("");
     console.log("🚀 fetchMeals START");
     const { data,error } = await supabase
       .from("meals")
-      .select("id, meal_type, date, time, glucose_flag, carb_food, carb_portion, carb_exchange, protein_food, protein_portion, veg_portion, fruit, fruit_portion, fruit_exchange, total_exchange, drink, meal_score")
+      .select(`
+  id,
+  meal_type,
+  date,
+  time,
+  glucose_flag,
+
+  carb_food,
+  carb_portion,
+
+  carb_food2,
+  carb_portion2,
+
+  carb_food3,
+  carb_portion3,
+
+  carb_exchange,
+
+  protein_food,
+  protein_portion,
+
+  veg_portion,
+
+  fruit,
+  fruit_portion,
+  fruit_exchange,
+
+  total_exchange,
+
+  drink,
+  meal_score
+`)
       .eq("user_id", user?.id)
       .order("date", { ascending: false });
        console.log("📦 DATA:", data);
@@ -342,13 +373,7 @@ const getColor = (status) => {
 };
 
 const totalExchange =
-  (isEditing
-    ? liveCarbExchange
-    : (meal.carb_exchange || 0)) +
-
-  (isEditing
-    ? liveFruitExchange
-    : (meal.fruit_exchange || 0));
+  Number(meal.total_exchange || 0);
 
 const maxCarb = profile?.carb_max || 3;
 const saveInlineEdit = async () => {
@@ -537,7 +562,7 @@ await fetchMeals();
 
       {/* FOOD */}
       <p><b>Food / 食物:</b></p>
-      <p><b>🍚 Karbohidrat / 碳水:</b></p>
+      <p><b>⚡ Karbohidrat / 碳水:</b></p>
      {isEditing ? (
   <>
     <select
@@ -570,10 +595,30 @@ await fetchMeals();
     </select>
   </>
 ) : (
-  <p>🍚 Carb: {meal.carb_food} ({meal.carb_portion})</p>
-)}
-      <p>
-  🍚 Carb Exchange:{" "}
+  <>
+    <p>
+      🍚1: {meal.carb_food}
+      ({meal.carb_portion})
+    </p>
+
+    {meal.carb_food2 &&
+      meal.carb_food2 !== "None" && (
+        <p>
+          🍚2: {meal.carb_food2}
+          ({meal.carb_portion2})
+        </p>
+    )}
+
+    {meal.carb_food3 &&
+      meal.carb_food3 !== "None" && (
+        <p>
+          🍚3: {meal.carb_food3}
+          ({meal.carb_portion3})
+        </p>
+    )}
+
+    <p>
+      🧮 Pertukaran Karbohidrat / 碳水换算分量:{" "}
 
   <strong style={{ color: "orange" }}>
     {isEditing
@@ -581,7 +626,21 @@ await fetchMeals();
       : (meal.carb_exchange ?? 0)}
   </strong>
 </p>
-      <p><b>🍗 Protein / 蛋白质:</b></p>
+<p
+  style={{
+    fontSize: "12px",
+    color: "#666",
+    marginTop: "-5px"
+  }}
+>
+  💡 Nasi goreng, mi goreng, mihun goreng atau makanan berkuah/bersos/bersalut tepung mungkin mengandungi karbohidrat tambahan.
+  <br />
+  炒饭、炒面、炒米粉或含酱汁/汤汁/裹面粉的食物可能含有额外碳水化合物。
+</p>
+  </>
+  )}
+
+      <p><b>💪 Protein / 蛋白质:</b></p>
       {isEditing ? (
   <>
     {/* FOOD */}
@@ -632,9 +691,8 @@ await fetchMeals();
     )}
   </>
 ) : (
-  <p>🍗 Protein: {meal.protein_food || "-"} ({meal.protein_portion || "-"})</p>
+  <p>🍗: {meal.protein_food || "-"} ({meal.protein_portion || "-"})</p>
 )}
-<br />
       {/* 🥬 VEGETABLES */}
 <p><b>🥬 Sayur-sayuran / 蔬菜:</b></p>
 
@@ -678,7 +736,7 @@ await fetchMeals();
   </>
 ) : (
   <p>
-    🥬 Vegetables:{" "}
+    🥗:{" "}
     {meal.veg_portion === "Lain-lain / 其他"
       ? meal.veg_other || "Lain-lain / 其他"
       : meal.veg_portion || "-"}
@@ -722,13 +780,13 @@ await fetchMeals();
   </>
 ) : (
   <p>
-    🍎 Fruit: {meal.fruit || "None"}{" "}
+    🍎: {meal.fruit || "None"}{" "}
     {meal.fruit_portion && `(${meal.fruit_portion})`}
   </p>
 )}
 
 <p>
-  🍏 Fruit Exchange:{" "}
+  🧮 Pertukaran Karbohidrat / 碳水换算分量:{" "}
   <strong style={{ color: "orange" }}>
     {isEditing ? liveFruitExchange : (meal.fruit_exchange ?? 0)}
   </strong>
@@ -905,7 +963,7 @@ await fetchMeals();
 </p>
      
 <p>
-  Ulasan Pemakanan / 饮食评估:{" "}
+  ⭐Ulasan Pemakanan / 饮食评估:{" "}
   <strong style={{
     color: meal.meal_score?.includes("perlu") ? "red" : "green"
   }}>
