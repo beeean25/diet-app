@@ -593,7 +593,89 @@ await fetchMeals();
         <option key={i} value={p}>{p}</option>
       ))}
     </select>
+
+    {/* 🍚 CARB 2 */}
+    {editingMeal.carb_food2 &&
+     editingMeal.carb_food2 !== "None" && (
+      <>
+        <h5>🍚 Carb 2</h5>
+
+        <select
+          value={editingMeal.carb_food2}
+          onChange={(e) =>
+            setEditingMeal({
+              ...editingMeal,
+              carb_food2: e.target.value,
+              carb_portion2: "None"
+            })
+          }
+        >
+          {Object.keys(carbMap).map((c, i) => (
+            <option key={i} value={c}>
+              {c}
+            </option>
+          ))}
+        </select>
+
+        <select
+          value={editingMeal.carb_portion2}
+          onChange={(e) =>
+            setEditingMeal({
+              ...editingMeal,
+              carb_portion2: e.target.value
+            })
+          }
+        >
+          {(carbMap[editingMeal.carb_food2] || []).map((p, i) => (
+            <option key={i} value={p}>
+              {p}
+            </option>
+          ))}
+        </select>
+      </>
+    )}
+        {/* 🍚 CARB 3 */}
+    {editingMeal.carb_food3 &&
+     editingMeal.carb_food3 !== "None" && (
+      <>
+        <h5>🍚 Carb 3</h5>
+
+        <select
+          value={editingMeal.carb_food3}
+          onChange={(e) =>
+            setEditingMeal({
+              ...editingMeal,
+              carb_food3: e.target.value,
+              carb_portion3: "None"
+            })
+          }
+        >
+          {Object.keys(carbMap).map((c, i) => (
+            <option key={i} value={c}>
+              {c}
+            </option>
+          ))}
+        </select>
+
+        <select
+          value={editingMeal.carb_portion3}
+          onChange={(e) =>
+            setEditingMeal({
+              ...editingMeal,
+              carb_portion3: e.target.value
+            })
+          }
+        >
+          {(carbMap[editingMeal.carb_food3] || []).map((p, i) => (
+            <option key={i} value={p}>
+              {p}
+            </option>
+          ))}
+        </select>
+      </>
+    )}
   </>
+  
 ) : (
   <>
     <p>
