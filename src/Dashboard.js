@@ -329,9 +329,11 @@ const mealData = {
   carb_food: editingMeal.carb_food,
   carb_portion: editingMeal.carb_portion,
 
-  carb_exchange: calculateCarbExchange(
-  editingMeal.carb_food,
-  editingMeal.carb_portion
+  carb_exchange: Number(
+  calculateCarbExchange(
+    editingMeal.carb_food,
+    editingMeal.carb_portion
+  )
 ),
 
   protein_food: editingMeal.protein_food,
@@ -345,10 +347,11 @@ const mealData = {
   fruit: editingMeal.fruit,
   fruit_portion: editingMeal.fruit_portion,
 
-  fruit_exchange:
-    fruitExchangeMap?.[editingMeal.fruit]?.[
-      editingMeal.fruit_portion
-    ] || 0,
+  fruit_exchange: Number(
+  fruitExchangeMap?.[editingMeal.fruit]?.[
+    editingMeal.fruit_portion
+  ] || 0
+),
 
   drink:
     editingMeal.drink === "Lain-lain / 其他"
@@ -361,7 +364,7 @@ const { data: mealUpdateData, error } = await supabase
   .update(mealData)
   .eq("id", editingMeal.id)
   .select();
-
+console.log("SAVE CONTINUES");
 console.log(
   "MEAL UPDATE DATA:",
   mealUpdateData
