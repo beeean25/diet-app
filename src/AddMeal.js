@@ -838,11 +838,18 @@ return (
 {/* FOOD dropdown */}
 <select
   value={carbFood}
-  onChange={(e)=>{
-    console.log("SELECT CHANGE:", e.target.value);
-    setCarbFood(e.target.value);
-    setCarbPortion("None");
-  }}
+  onChange={(e) => {
+  const selectedFood = e.target.value;
+
+  console.log("SELECT CHANGE:", selectedFood);
+
+  setCarbFood(selectedFood);
+
+  const firstPortion =
+    (carbMap[selectedFood] || [])[0] || "";
+
+  setCarbPortion(firstPortion);
+}}
 >
   {Object.keys(carbMap).map((c,i)=>(
     <option key={i} value={c}>{c}</option>
@@ -904,9 +911,15 @@ return (
     <select
       value={carbFood2}
       onChange={(e) => {
-        setCarbFood2(e.target.value);
-        setCarbPortion2("None");
-      }}
+  const selectedFood = e.target.value;
+
+  setCarbFood2(selectedFood);
+
+  const firstPortion =
+    (carbMap[selectedFood] || [])[0] || "";
+
+  setCarbPortion2(firstPortion);
+}}
     >
       {Object.keys(carbMap).map((c, i) => (
         <option key={i} value={c}>
@@ -944,9 +957,15 @@ return (
     <select
       value={carbFood3}
       onChange={(e) => {
-        setCarbFood3(e.target.value);
-        setCarbPortion3("None");
-      }}
+  const selectedFood = e.target.value;
+
+  setCarbFood3(selectedFood);
+
+  const firstPortion =
+    (carbMap[selectedFood] || [])[0] || "";
+
+  setCarbPortion3(firstPortion);
+}}
     >
       {Object.keys(carbMap).map((c, i) => (
         <option key={i} value={c}>
