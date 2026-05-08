@@ -386,12 +386,33 @@ const mealData = {
   carb_food: editingMeal.carb_food,
   carb_portion: editingMeal.carb_portion,
 
-  carb_exchange: Number(
-  calculateCarbExchange(
-    editingMeal.carb_food,
-    editingMeal.carb_portion
-  )
-),
+  carb_food2: editingMeal.carb_food2,
+carb_portion2: editingMeal.carb_portion2,
+
+carb_food3: editingMeal.carb_food3,
+carb_portion3: editingMeal.carb_portion3,
+
+  carb_exchange:
+  Number(
+    calculateCarbExchange(
+      editingMeal.carb_food,
+      editingMeal.carb_portion
+    )
+  ) +
+
+  Number(
+    calculateCarbExchange(
+      editingMeal.carb_food2,
+      editingMeal.carb_portion2
+    )
+  ) +
+
+  Number(
+    calculateCarbExchange(
+      editingMeal.carb_food3,
+      editingMeal.carb_portion3
+    )
+  ),
 
   protein_food: editingMeal.protein_food,
   protein_portion: editingMeal.protein_portion,
