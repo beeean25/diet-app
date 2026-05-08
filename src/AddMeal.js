@@ -379,11 +379,16 @@ export default function AddMeal({
   const [mealType, setMealType] = useState("Sarapan pagi （早餐）");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
-
   const [carbFood, setCarbFood] = useState("None");
   const [carbPortion, setCarbPortion] = useState("None");
+  const [carbFood2, setCarbFood2] = useState("None");
+const [carbPortion2, setCarbPortion2] = useState("None");
+const [carbFood3, setCarbFood3] = useState("None");
+const [carbPortion3, setCarbPortion3] = useState("None");
   const [carbOtherFood, setCarbOtherFood] = useState("");
   const [carbOtherPortion, setCarbOtherPortion] = useState("");
+  const [showCarb2, setShowCarb2] = useState(false);
+const [showCarb3, setShowCarb3] = useState(false);
 
   const [proteinFood, setProteinFood] = useState("None");
   const [proteinPortion, setProteinPortion] = useState("None");
@@ -407,6 +412,12 @@ const resetForm = () => {
   setMealType("");
   setCarbFood("");
   setCarbPortion("");
+  setCarbFood2("None");
+  setCarbPortion2("None");
+  setCarbFood3("None");
+  setCarbPortion3("None");
+  setShowCarb2(false);
+  setShowCarb3(false);
   setProteinFood("");
   setProteinPortion("");
   setVegPortion("");
@@ -433,6 +444,19 @@ useEffect(() => {
     setCarbFood(existingMeal.carb_food || "None");
     setCarbPortion(existingMeal.carb_portion || "None");
 
+    setCarbFood2(existingMeal.carb_food2 || "None");
+    setCarbPortion2(existingMeal.carb_portion2 || "None");
+
+    setCarbFood3(existingMeal.carb_food3 || "None");
+    setCarbPortion3(existingMeal.carb_portion3 || "None");
+
+    if (existingMeal.carb_food2) {
+  setShowCarb2(true);
+}
+
+if (existingMeal.carb_food3) {
+  setShowCarb3(true);
+}
     setProteinFood(existingMeal.protein_food || "None");
     setProteinPortion(existingMeal.protein_portion || "None");
 
@@ -549,7 +573,19 @@ if (fruitPortion === "Lain-lain / 其他") {
 }
 
 // ✅ FINAL TOTAL
-const totalCarb = carbExchange + fruitCarb;
+const carbExchange2 =
+  calculateCarbExchange(carbFood2, carbPortion2);
+
+const carbExchange3 =
+  calculateCarbExchange(carbFood3, carbPortion3);
+
+const totalMainCarb =
+  carbExchange +
+  carbExchange2 +
+  carbExchange3;
+
+const totalCarb =
+  totalMainCarb + fruitCarb;
 
   // =========================
   // 🚦 MEAL SCORING
@@ -557,7 +593,7 @@ const totalCarb = carbExchange + fruitCarb;
   console.log("=== DEBUG START ===");
 
 const mealScore = getMealScore(
-  carbExchange,
+  totalCarb,
   vegPortion,
   proteinFood,
   drink,
@@ -620,7 +656,7 @@ console.log("ALERTS:", alerts);
   glucoseFlag = alerts.join(" | ");
 }
 // 🧪 DEBUG HERE
-console.log("🍚 FINAL CARB EXCHANGE:", carbExchange);
+console.log("🍚 FINAL CARB EXCHANGE:", totalMainCarb);
 console.log("🍎 FRUIT EXCHANGE:", fruitCarb);
 console.log("🔥 TOTAL CARB:", totalCarb);
 
@@ -641,7 +677,14 @@ if (existingMeal) {
 
       carb_food: finalCarbFood,
       carb_portion: carbPortion,
-      carb_exchange: carbExchange,
+
+      carb_food2: carbFood2,
+      carb_portion2: carbPortion2,
+
+      carb_food3: carbFood3,
+      carb_portion3: carbPortion3,
+
+      carb_exchange: totalMainCarb,
 
       protein_food: proteinFood === "Lain-lain / 其他"
         ? proteinOtherFood
@@ -687,7 +730,14 @@ if (existingMeal) {
 
     carb_food: finalCarbFood,
     carb_portion: carbPortion,
-    carb_exchange: carbExchange,
+
+    carb_food2: carbFood2,
+  carb_portion2: carbPortion2,
+
+  carb_food3: carbFood3,
+  carb_portion3: carbPortion3,
+
+    carb_exchange: totalMainCarb,
 
     protein_food: proteinFood === "Lain-lain / 其他"
       ? proteinOtherFood
@@ -768,7 +818,7 @@ return (
 
     <br/><br/>
 
-      <h4>Karbohidrat / 碳水</h4>
+      <h4>Karbohidrat / 碳水食物</h4>
 
 {/* FOOD dropdown */}
 <select
@@ -826,6 +876,84 @@ return (
         onChange={(e)=>setCarbOtherPortion(e.target.value)}
       />
     )}
+    <button
+  type="button"
+  onClick={() => setShowCarb2(true)}
+>
+  + Tambah Karbohidrat/添加碳水食物
+</button>
+{showCarb2 && (
+  <>
+    <h5>Karbohidrat Tambahan 2 / 碳水食物 2</h5>
+
+    <select
+      value={carbFood2}
+      onChange={(e) => {
+        setCarbFood2(e.target.value);
+        setCarbPortion2("None");
+      }}
+    >
+      {Object.keys(carbMap).map((c, i) => (
+        <option key={i} value={c}>
+          {c}
+        </option>
+      ))}
+    </select>
+
+    <select
+      value={carbPortion2}
+      onChange={(e) =>
+        setCarbPortion2(e.target.value)
+      }
+    >
+      {(carbMap[carbFood2] || []).map((p, i) => (
+        <option key={i} value={p}>
+          {p}
+        </option>
+      ))}
+    </select>
+  </>
+)}
+{showCarb2 && !showCarb3 && (
+  <button
+    type="button"
+    onClick={() => setShowCarb3(true)}
+  >
+    + Tambah extra Karbohidrat / 再添加碳水食物
+  </button>
+)}
+{showCarb3 && (
+  <>
+    <h5>Karbohidrat Tambahan 3 / 碳水食物 3</h5>
+
+    <select
+      value={carbFood3}
+      onChange={(e) => {
+        setCarbFood3(e.target.value);
+        setCarbPortion3("None");
+      }}
+    >
+      {Object.keys(carbMap).map((c, i) => (
+        <option key={i} value={c}>
+          {c}
+        </option>
+      ))}
+    </select>
+
+    <select
+      value={carbPortion3}
+      onChange={(e) =>
+        setCarbPortion3(e.target.value)
+      }
+    >
+      {(carbMap[carbFood3] || []).map((p, i) => (
+        <option key={i} value={p}>
+          {p}
+        </option>
+      ))}
+    </select>
+  </>
+)}
   </>
 )}
 
