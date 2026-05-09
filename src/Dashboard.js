@@ -1005,7 +1005,7 @@ await fetchMeals();
   饮料碳水换算:
   <strong style={{ color: "orange" }}>
     {" "}
-    {drinkExchange}
+    {meal.drink_exchange || 0}
   </strong>
 </p>
 <p>🎯 Had Karbohidrat/ 碳水化合物上限: {maxCarb}</p>

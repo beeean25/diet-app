@@ -487,24 +487,7 @@ const [fruitOtherPortion, setFruitOtherPortion] = useState("");
   const [fruitOther, setFruitOther] = useState("");
 
   const [lastScore, setLastScore] = useState("");
-  const baseDrinkExchangeDisplay =
-  Number(
-    drinkBaseExchangeMap[drink] || 0
-  );
-
-const extraSugarMilkExchangeDisplay =
-  customizableDrinks.includes(drink)
-    ? Number(
-        sugarExchangeMap[drinkSugar] || 0
-      ) +
-      Number(
-        milkExchangeMap[drinkMilk] || 0
-      )
-    : 0;
-
-const drinkExchange =
-  baseDrinkExchangeDisplay +
-  extraSugarMilkExchangeDisplay;
+  
   // 🔄 Reset form after save
 const resetForm = () => {
   setMealType("");
