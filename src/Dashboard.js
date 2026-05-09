@@ -312,9 +312,11 @@ console.log("CHART TIMES:", glucoseChartData.map(d => d.time));
           stroke="red"
           strokeWidth={2}     // 👈 ADD THIS
           label={{
-          value: `${meal.meal_type || ""} (${Number(meal.carb_exchange || 0) +
-        Number(meal.fruit_exchange || 0)
-        } EX)`,
+          value: `${meal.meal_type || ""} (${
+  Number(meal.carb_exchange || 0) +
+  Number(meal.fruit_exchange || 0) +
+  Number(meal.drink_exchange || 0)
+} EX)`,
           position: "insideTop",
          fill: "red",
          fontSize: 11
@@ -379,23 +381,27 @@ const getColor = (status) => {
   return "red";
 };
 const liveDrinkExchange =
-  Number(
-    drinkBaseExchangeMap[
-      editingMeal?.drink
-    ] || 0
-  ) +
+  isEditing
+    ? (
+        Number(
+          drinkBaseExchangeMap[
+            editingMeal?.drink
+          ] || 0
+        ) +
 
-  Number(
-    sugarExchangeMap[
-      editingMeal?.drink_sugar
-    ] || 0
-  ) +
+        Number(
+          sugarExchangeMap[
+            editingMeal?.drink_sugar
+          ] || 0
+        ) +
 
-  Number(
-    milkExchangeMap[
-      editingMeal?.drink_milk
-    ] || 0
-  );
+        Number(
+          milkExchangeMap[
+            editingMeal?.drink_milk
+          ] || 0
+        )
+      )
+    : Number(meal.drink_exchange || 0);
 
 const totalExchange =
   isEditing
@@ -724,7 +730,7 @@ await fetchMeals();
         setEditingMeal({
           ...editingMeal,
           carb_food: e.target.value,
-          carb_portion: "None"
+          carb_portion: "Sila pilih / 请选择"
         })
       }
     >
@@ -734,7 +740,11 @@ await fetchMeals();
     </select>
 
     <select
-      value={editingMeal.carb_portion}
+      value={
+  editingMeal.carb_portion === "None"
+    ? "Sila pilih / 请选择"
+    : editingMeal.carb_portion
+}
       onChange={(e) =>
         setEditingMeal({
           ...editingMeal,
@@ -742,6 +752,9 @@ await fetchMeals();
         })
       }
     >
+      <option value="Sila pilih / 请选择">
+  Sila pilih / 请选择
+</option>
       {(carbMap[editingMeal.carb_food] || []).map((p, i) => (
         <option key={i} value={p}>{p}</option>
       ))}
@@ -754,12 +767,16 @@ await fetchMeals();
         <h5>🍚 Carb 2</h5>
 
         <select
-          value={editingMeal.carb_food2}
+          value={
+  editingMeal.carb_portion === "None"
+    ? "Sila pilih / 请选择"
+    : editingMeal.carb_portion
+}
           onChange={(e) =>
             setEditingMeal({
               ...editingMeal,
               carb_food2: e.target.value,
-              carb_portion2: "None"
+              carb_portion2: "Sila pilih / 请选择"
             })
           }
         >
@@ -779,6 +796,9 @@ await fetchMeals();
             })
           }
         >
+          <option value="Sila pilih / 请选择">
+  Sila pilih / 请选择
+</option>
           {(carbMap[editingMeal.carb_food2] || []).map((p, i) => (
             <option key={i} value={p}>
               {p}
@@ -794,12 +814,16 @@ await fetchMeals();
         <h5>🍚 Carb 3</h5>
 
         <select
-          value={editingMeal.carb_food3}
+          value={
+  editingMeal.carb_portion3 === "None"
+    ? "Sila pilih / 请选择"
+    : editingMeal.carb_portion3
+}
           onChange={(e) =>
             setEditingMeal({
               ...editingMeal,
               carb_food3: e.target.value,
-              carb_portion3: "None"
+              carb_portion3: "Sila pilih / 请选择"
             })
           }
         >
@@ -819,6 +843,9 @@ await fetchMeals();
             })
           }
         >
+          <option value="Sila pilih / 请选择">
+  Sila pilih / 请选择
+</option>
           {(carbMap[editingMeal.carb_food3] || []).map((p, i) => (
             <option key={i} value={p}>
               {p}
@@ -885,7 +912,7 @@ await fetchMeals();
         setEditingMeal({
           ...editingMeal,
           protein_food: e.target.value,
-          protein_portion: "None"
+          protein_portion: "Sila Pilih / 请选择"
         })
       }
     >
@@ -918,6 +945,9 @@ await fetchMeals();
             })
           }
         >
+          <option value="Sila pilih / 请选择">
+  Sila pilih / 请选择
+</option>
           {(proteinMap[editingMeal.protein_food] || []).map((p, i) => (
             <option key={i} value={p}>{p}</option>
           ))}
@@ -987,7 +1017,7 @@ await fetchMeals();
         setEditingMeal({
           ...editingMeal,
           fruit: e.target.value,
-          fruit_portion: "None"
+          fruit_portion: "Sila pilih / 请选择"
         })
       }
     >
@@ -1007,6 +1037,9 @@ await fetchMeals();
           })
         }
       >
+        <option value="Sila pilih / 请选择">
+  Sila pilih / 请选择
+</option>
         {(fruitMap[editingMeal.fruit] || []).map((p, i) => (
           <option key={i} value={p}>{p}</option>
         ))}

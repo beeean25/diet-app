@@ -427,7 +427,12 @@ const group = carbGroupMap[cleanFood];
   if (
   !carb_food ||
   carb_food === "None" ||
-  carb_food === "Tiada / 无"
+  carb_food === "Tiada / 无"||
+
+  !carb_portion ||
+  carb_portion === "None" ||
+  carb_portion === "Tiada / 无" ||
+  carb_portion === "Sila pilih / 请选择"
 ) {
   return 0;
 }
@@ -466,18 +471,19 @@ export default function AddMeal({
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [carbFood, setCarbFood] = useState("Tiada / 无");
-  const [carbPortion, setCarbPortion] = useState("Tiada / 无");
+  const [carbPortion, setCarbPortion] =
+  useState("Sila pilih / 请选择");
   const [carbFood2, setCarbFood2] = useState("Tiada / 无");
-const [carbPortion2, setCarbPortion2] = useState("Tiada / 无");
+const [carbPortion2, setCarbPortion2] = useState("Sila pilih / 请选择");
 const [carbFood3, setCarbFood3] = useState("Tiada / 无");
-const [carbPortion3, setCarbPortion3] = useState("Tiada / 无");
+const [carbPortion3, setCarbPortion3] = useState("Sila pilih / 请选择");
   const [carbOtherFood, setCarbOtherFood] = useState("");
   const [carbOtherPortion, setCarbOtherPortion] = useState("");
   const [showCarb2, setShowCarb2] = useState(false);
 const [showCarb3, setShowCarb3] = useState(false);
 
   const [proteinFood, setProteinFood] = useState("Tiada / 无");
-  const [proteinPortion, setProteinPortion] = useState("Tiada / 无");
+  const [proteinPortion, setProteinPortion] = useState("Sila pilih / 请选择");
   const [proteinOtherFood, setProteinOtherFood] = useState("");
   const [proteinOtherPortion, setProteinOtherPortion] = useState("");
 
@@ -493,7 +499,7 @@ const [drinkMilk, setDrinkMilk] =
   const [drinkOther, setDrinkOther] = useState("");
 
   const [fruit, setFruit] = useState("Tiada / 无");
-const [fruitPortion, setFruitPortion] = useState("Tiada / 无");
+const [fruitPortion, setFruitPortion] = useState("Sila pilih / 请选择");
 const [fruitOtherPortion, setFruitOtherPortion] = useState("");
   const [fruitOther, setFruitOther] = useState("");
 
@@ -505,13 +511,13 @@ const resetForm = () => {
   setCarbFood("");
   setCarbPortion("");
   setCarbFood2("Tiada / 无");
-  setCarbPortion2("Tiada / 无");
+  setCarbPortion2("Sila pilih / 请选择");
   setCarbFood3("Tiada / 无");
-  setCarbPortion3("Tiada / 无");
+  setCarbPortion3("Sila pilih / 请选择");
   setShowCarb2(false);
   setShowCarb3(false);
   setProteinFood("");
-  setProteinPortion("");
+  setProteinPortion("Sila pilih / 请选择");
   setVegPortion("");
   setFruit("Tiada / 无");
   setFruitPortion("");
@@ -534,13 +540,13 @@ useEffect(() => {
     setTime(existingMeal.time || "");
 
     setCarbFood(existingMeal.carb_food || "Tiada / 无");
-    setCarbPortion(existingMeal.carb_portion || "Tiada / 无");
+    setCarbPortion(existingMeal.carb_portion || "Sila pilih / 请选择");
 
     setCarbFood2(existingMeal.carb_food2 || "Tiada / 无");
-    setCarbPortion2(existingMeal.carb_portion2 || "Tiada / 无");
+    setCarbPortion2(existingMeal.carb_portion2 || "Sila pilih / 请选择");
 
     setCarbFood3(existingMeal.carb_food3 || "Tiada / 无");
-    setCarbPortion3(existingMeal.carb_portion3 || "Tiada / 无");
+    setCarbPortion3(existingMeal.carb_portion3 || "Sila pilih / 请选择");
 
     if (existingMeal.carb_food2) {
   setShowCarb2(true);
@@ -550,14 +556,14 @@ if (existingMeal.carb_food3) {
   setShowCarb3(true);
 }
     setProteinFood(existingMeal.protein_food || "Tiada / 无");
-    setProteinPortion(existingMeal.protein_portion || "Tiada / 无");
+    setProteinPortion(existingMeal.protein_portion || "Sila pilih / 请选择");
 
     setVegPortion(existingMeal.veg_portion || "Tiada / 无");
 
     setDrink(existingMeal.drink || "Tiada / 无");
 
     setFruit(existingMeal.fruit || "Tiada / 无");
-    setFruitPortion(existingMeal.fruit_portion || "Tiada / 无");
+    setFruitPortion(existingMeal.fruit_portion || "Sila pilih / 请选择");
   }
 }, [existingMeal]);
 
@@ -1007,6 +1013,9 @@ return (
       value={carbPortion}
       onChange={(e)=>setCarbPortion(e.target.value)}
     >
+      <option value="Sila pilih / 请选择">
+  Sila pilih / 请选择
+</option>
       {(carbMap[carbFood] || []).map((p,i)=>(
         <option key={i} value={p}>{p}</option>
       ))}
@@ -1061,6 +1070,9 @@ return (
         setCarbPortion2(e.target.value)
       }
     >
+      <option value="Sila pilih / 请选择">
+  Sila pilih / 请选择
+</option>
       {(carbMap[carbFood2] || []).map((p, i) => (
         <option key={i} value={p}>
           {p}
@@ -1107,6 +1119,9 @@ return (
         setCarbPortion3(e.target.value)
       }
     >
+      <option value="Sila pilih / 请选择">
+  Sila pilih / 请选择
+</option>
       {(carbMap[carbFood3] || []).map((p, i) => (
         <option key={i} value={p}>
           {p}
@@ -1157,6 +1172,9 @@ return (
       value={proteinPortion}
       onChange={(e)=>setProteinPortion(e.target.value)}
     >
+      <option value="Sila pilih / 请选择">
+  Sila pilih / 请选择
+</option>
       {(proteinMap[proteinFood] || []).map((p,i)=>(
         <option key={i}>{p}</option>
       ))}
