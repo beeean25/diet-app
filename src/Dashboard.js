@@ -234,7 +234,8 @@ const glucoseChartData = [
 
     totalCarb:
       Number(m.carb_exchange || 0) +
-      Number(m.fruit_exchange || 0),
+      Number(m.fruit_exchange || 0) +
+      Number(m.drink_exchange || 0),
 
     mealType: m.meal_type
   }))

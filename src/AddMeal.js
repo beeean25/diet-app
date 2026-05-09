@@ -424,10 +424,21 @@ export function calculateCarbExchange(carb_food, carb_portion) {
 const group = carbGroupMap[cleanFood];
   console.log("GROUP:", group);
 
-  if (!group) {
-    console.log("❌ FOOD NOT FOUND IN carbGroupMap");
-    return 0;
-  }
+  if (
+  !carb_food ||
+  carb_food === "None" ||
+  carb_food === "Tiada / 无"
+) {
+  return 0;
+}
+
+if (!group) {
+  console.log(
+    "❌ FOOD NOT FOUND:",
+    carb_food
+  );
+  return 0;
+}
 
   const groupMap = carbExchangeByGroup[group];
   console.log("AVAILABLE PORTIONS:", Object.keys(groupMap));
