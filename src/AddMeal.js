@@ -1272,10 +1272,27 @@ return (
 
 <select
   value={drink}
-  onChange={(e)=>setDrink(e.target.value)}
+  onChange={(e) => {
+    const selectedDrink = e.target.value;
+
+    setDrink(selectedDrink);
+
+    // reset sugar & milk
+    if (
+      !customizableDrinks.includes(
+        selectedDrink
+      )
+    ) {
+      setDrinkSugar("Tiada gula / 无糖");
+
+      setDrinkMilk("Tiada susu / 无奶");
+    }
+  }}
 >
-  {drinkOptions.map((d,i)=>(
-    <option key={i}>{d}</option>
+  {drinkOptions.map((d, i) => (
+    <option key={i} value={d}>
+      {d}
+    </option>
   ))}
 </select>
 

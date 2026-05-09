@@ -11,6 +11,7 @@ import AddMeal, {
   drinkBaseExchangeMap,
   calculateCarbExchange
 } from "./AddMeal";
+
 import GlucoseForm from "./GlucoseForm";
 import {
   LineChart,
@@ -22,6 +23,12 @@ import {
   ResponsiveContainer,
   ReferenceLine
 } from "recharts";
+
+const customizableDrinks = [
+  "Teh/Kopi / 茶/咖啡",
+
+  "Minuman coklat atau bermalta / 巧克力或麦芽饮料"
+];
 
 export default function Dashboard({ user, profile }) {
   const [meals, setMeals] = useState([]);
@@ -767,8 +774,7 @@ await fetchMeals();
         <h5>🍚 Carb 2</h5>
 
         <select
-          value={
-  editingMeal.carb_portion === "None"
+          value={editingMeal.carb_food2
     ? "Sila pilih / 请选择"
     : editingMeal.carb_portion
 }
@@ -864,19 +870,27 @@ await fetchMeals();
     </p>
 
     {meal.carb_food2 &&
-      meal.carb_food2 !== "None" && (
-        <p>
-          🍚2: {meal.carb_food2}
-          ({meal.carb_portion2})
-        </p>
-    )}
+ meal.carb_food2 !== "None" &&
+ meal.carb_food2 !== "Tiada / 无" && (
+  <p>
+    🍚2: {meal.carb_food2}
+
+    {meal.carb_portion2 &&
+     meal.carb_portion2 !== "None" &&
+     ` (${meal.carb_portion2})`}
+  </p>
+)}
 
     {meal.carb_food3 &&
-      meal.carb_food3 !== "None" && (
-        <p>
-          🍚3: {meal.carb_food3}
-          ({meal.carb_portion3})
-        </p>
+ meal.carb_food3 !== "None" &&
+ meal.carb_food3 !== "Tiada / 无" && (
+  <p>
+    🍚3: {meal.carb_food3}
+
+    {meal.carb_portion3 &&
+     meal.carb_portion3 !== "None" &&
+     ` (${meal.carb_portion3})`}
+  </p>
     )}
 
     <p>
@@ -912,7 +926,7 @@ await fetchMeals();
         setEditingMeal({
           ...editingMeal,
           protein_food: e.target.value,
-          protein_portion: "Sila Pilih / 请选择"
+          protein_portion: "Sila pilih / 请选择"
         })
       }
     >
@@ -1068,12 +1082,30 @@ await fetchMeals();
       value={drinkOptions.includes(editingMeal.drink)
         ? editingMeal.drink
         : "Tiada / 无"}
-      onChange={(e) =>
-        setEditingMeal({
-          ...editingMeal,
-          drink: e.target.value
-        })
-      }
+      onChange={(e) => {
+  const selectedDrink =
+    e.target.value;
+
+  setEditingMeal({
+    ...editingMeal,
+
+    drink: selectedDrink,
+
+    drink_sugar:
+      customizableDrinks.includes(
+        selectedDrink
+      )
+        ? editingMeal.drink_sugar
+        : "Tiada gula / 无糖",
+
+    drink_milk:
+      customizableDrinks.includes(
+        selectedDrink
+      )
+        ? editingMeal.drink_milk
+        : "Tiada susu / 无奶"
+  });
+}}
     >
       {drinkOptions.map((d, i) => (
         <option key={i} value={d}>{d}</option>
