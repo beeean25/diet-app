@@ -462,7 +462,37 @@ carb_portion3: editingMeal.carb_portion3,
     editingMeal.fruit_portion
   ] || 0
 ),
+total_exchange:
+  (
+    Number(
+      calculateCarbExchange(
+        editingMeal.carb_food,
+        editingMeal.carb_portion
+      )
+    ) +
 
+    Number(
+      calculateCarbExchange(
+        editingMeal.carb_food2,
+        editingMeal.carb_portion2
+      )
+    ) +
+
+    Number(
+      calculateCarbExchange(
+        editingMeal.carb_food3,
+        editingMeal.carb_portion3
+      )
+    )
+  ) +
+
+  Number(
+    fruitExchangeMap?.[
+      editingMeal.fruit
+    ]?.[
+      editingMeal.fruit_portion
+    ] || 0
+  ),
   drink:
     editingMeal.drink === "Lain-lain / 其他"
       ? editingMeal.drink_other
