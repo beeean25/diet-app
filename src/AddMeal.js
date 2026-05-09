@@ -204,11 +204,88 @@ export const fruitExchangeMap = {
   ];
 
   export const drinkOptions = [
-    "Tiada / 无","Air kosong / 白开水","Teh/Kopi tanpa gula / 无糖",
-    "Teh/Kopi 1 sudu kecil gula / 1茶匙糖","Teh/Kopi 2 sudu kecil gula / 2茶匙糖",
-    "Teh/Kopi 1 sudu besar gula / 1汤匙糖","Teh/Kopi 2 sudu besar gula / 2汤匙糖",
-    "Minuman coklat / 巧克力饮料","Susu kosong / 牛奶","Susu berperisa / 调味奶","Lain-lain / 其他"
+    "Tiada / 无","Air kosong / 白开水","Teh/Kopi / 茶/咖啡","Teh tarik / 拉茶", "Kopi susu / 奶咖啡",
+    "Kopi 3 dalam 1 / 3合1咖啡", "Kopi putih 3 dalam 1 / 3合1白咖啡", "Minuman coklat atau bermalta / 巧克力或麦芽饮料", "Minuman soya / 豆奶", "Minuman soya (tanpa gula) / 豆奶 (无添加糖)",
+    "Susu kosong / 牛奶","Susu berperisa / 调味奶","Minuman berkotak / 盒装饮料","Minuman berkarbonat / 汽水","Buble tea / 珍珠奶茶","Lain-lain / 其他"
   ];
+  export const sugarExchangeMap = {
+  "Tiada gula / 无糖": 0,
+
+  "1 sudu teh gula / 1茶匙糖": 0.3,
+
+  "2 sudu teh gula / 2茶匙糖": 0.6,
+
+  "3 sudu teh gula / 3茶匙糖": 1,
+
+  "1 sudu makan gula / 1汤匙糖": 1,
+
+  "1 1/2 sudu makan gula / 1汤匙半糖": 1.5,
+
+   "2 sudu makan gula / 2汤匙糖": 2
+};
+export const milkExchangeMap = {
+  "Tiada susu / 无奶": 0,
+
+  "Susu segar 1/2 gelas / 鲜奶半杯": 0.5,
+
+  "Susu segar 1 gelas / 鲜奶1杯": 1,
+
+  "Susu tepung 1 sudu makan/ 牛奶粉1汤匙": 0.3,
+
+  "Susu tepung 2 sudu makan/ 牛奶粉2汤匙": 0.6,
+
+  "Susu tepung 3 sudu makan/ 牛奶粉3汤匙": 1.0,
+
+  "Susu cair / 淡奶": 1,
+
+  "Krimer manis 1 sudu makan/ 炼奶1汤匙": 0.5,
+
+  "Krimer manis 2 sudu makan/ 炼奶2汤匙": 1.0,
+
+  "Krimer manis 3 sudu makan/ 炼奶3汤匙": 1.5
+};
+export const drinkBaseExchangeMap = {
+  "Tiada / 无": 0,
+
+  "Air kosong / 白开水": 0,
+
+  "Teh / 茶": 0,
+
+  "Kopi / 咖啡": 0,
+
+  "Kopi 3 dalam 1 / 3合1咖啡": 1, 
+  
+  "Kopi putih 3 dalam 1 / 3合1白咖啡": 2,
+
+  "Minuman coklat atau bermalta / 巧克力或麦芽饮料": 1,
+
+  "Susu kosong / 牛奶": 1,
+
+  "Susu berperisa / 调味奶": 2,
+
+  "Teh tarik / 拉茶": 2,
+
+  "Kopi susu / 奶咖啡": 2,
+
+  "Minuman soya / 豆奶": 1,
+
+  "Minuman soya (tanpa gula) / 豆奶 (无添加糖)":0,
+
+  "Minuman berkotak / 盒装饮料": 1,
+
+  "Minuman berkarbonat / 汽水": 3,
+
+  "Bubble tea / 珍珠奶茶": 4,
+
+  "Lain-lain / 其他": 0
+};
+const customizableDrinks = [
+  "Teh / 茶",
+
+  "Kopi / 咖啡",
+
+  "Minuman coklat atau bermalta / 巧克力或麦芽饮料"
+];
 const carbGroupMap = {
 
   // 🍚 RICE GROUP (exclude porridge)
@@ -381,49 +458,72 @@ export default function AddMeal({
   const [mealType, setMealType] = useState("Sarapan pagi （早餐）");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
-  const [carbFood, setCarbFood] = useState("None");
-  const [carbPortion, setCarbPortion] = useState("None");
-  const [carbFood2, setCarbFood2] = useState("None");
-const [carbPortion2, setCarbPortion2] = useState("None");
-const [carbFood3, setCarbFood3] = useState("None");
-const [carbPortion3, setCarbPortion3] = useState("None");
+  const [carbFood, setCarbFood] = useState("Tiada / 无");
+  const [carbPortion, setCarbPortion] = useState("Tiada / 无");
+  const [carbFood2, setCarbFood2] = useState("Tiada / 无");
+const [carbPortion2, setCarbPortion2] = useState("Tiada / 无");
+const [carbFood3, setCarbFood3] = useState("Tiada / 无");
+const [carbPortion3, setCarbPortion3] = useState("Tiada / 无");
   const [carbOtherFood, setCarbOtherFood] = useState("");
   const [carbOtherPortion, setCarbOtherPortion] = useState("");
   const [showCarb2, setShowCarb2] = useState(false);
 const [showCarb3, setShowCarb3] = useState(false);
 
-  const [proteinFood, setProteinFood] = useState("None");
-  const [proteinPortion, setProteinPortion] = useState("None");
+  const [proteinFood, setProteinFood] = useState("Tiada / 无");
+  const [proteinPortion, setProteinPortion] = useState("Tiada / 无");
   const [proteinOtherFood, setProteinOtherFood] = useState("");
   const [proteinOtherPortion, setProteinOtherPortion] = useState("");
 
-  const [vegPortion, setVegPortion] = useState("None");
+  const [vegPortion, setVegPortion] = useState("Tiada / 无");
   const [vegOther, setVegOther] = useState("");
 
-  const [drink, setDrink] = useState("None");
+  const [drink, setDrink] = useState("Tiada / 无");
+  const [drinkSugar, setDrinkSugar] =
+  useState("Tiada gula / 无糖");
+
+const [drinkMilk, setDrinkMilk] =
+  useState("Tiada susu / 无奶");
   const [drinkOther, setDrinkOther] = useState("");
 
-  const [fruit, setFruit] = useState("None");
-const [fruitPortion, setFruitPortion] = useState("None");
+  const [fruit, setFruit] = useState("Tiada / 无");
+const [fruitPortion, setFruitPortion] = useState("Tiada / 无");
 const [fruitOtherPortion, setFruitOtherPortion] = useState("");
   const [fruitOther, setFruitOther] = useState("");
 
   const [lastScore, setLastScore] = useState("");
+  const baseDrinkExchangeDisplay =
+  Number(
+    drinkBaseExchangeMap[drink] || 0
+  );
+
+const extraSugarMilkExchangeDisplay =
+  customizableDrinks.includes(drink)
+    ? Number(
+        sugarExchangeMap[drinkSugar] || 0
+      ) +
+      Number(
+        milkExchangeMap[drinkMilk] || 0
+      )
+    : 0;
+
+const drinkExchange =
+  baseDrinkExchangeDisplay +
+  extraSugarMilkExchangeDisplay;
   // 🔄 Reset form after save
 const resetForm = () => {
   setMealType("");
   setCarbFood("");
   setCarbPortion("");
-  setCarbFood2("None");
-  setCarbPortion2("None");
-  setCarbFood3("None");
-  setCarbPortion3("None");
+  setCarbFood2("Tiada / 无");
+  setCarbPortion2("Tiada / 无");
+  setCarbFood3("Tiada / 无");
+  setCarbPortion3("Tiada / 无");
   setShowCarb2(false);
   setShowCarb3(false);
   setProteinFood("");
   setProteinPortion("");
   setVegPortion("");
-  setFruit("None");
+  setFruit("Tiada / 无");
   setFruitPortion("");
   setDrink("");
 
@@ -443,14 +543,14 @@ useEffect(() => {
     setDate(existingMeal.date || "");
     setTime(existingMeal.time || "");
 
-    setCarbFood(existingMeal.carb_food || "None");
-    setCarbPortion(existingMeal.carb_portion || "None");
+    setCarbFood(existingMeal.carb_food || "Tiada / 无");
+    setCarbPortion(existingMeal.carb_portion || "Tiada / 无");
 
-    setCarbFood2(existingMeal.carb_food2 || "None");
-    setCarbPortion2(existingMeal.carb_portion2 || "None");
+    setCarbFood2(existingMeal.carb_food2 || "Tiada / 无");
+    setCarbPortion2(existingMeal.carb_portion2 || "Tiada / 无");
 
-    setCarbFood3(existingMeal.carb_food3 || "None");
-    setCarbPortion3(existingMeal.carb_portion3 || "None");
+    setCarbFood3(existingMeal.carb_food3 || "Tiada / 无");
+    setCarbPortion3(existingMeal.carb_portion3 || "Tiada / 无");
 
     if (existingMeal.carb_food2) {
   setShowCarb2(true);
@@ -459,15 +559,15 @@ useEffect(() => {
 if (existingMeal.carb_food3) {
   setShowCarb3(true);
 }
-    setProteinFood(existingMeal.protein_food || "None");
-    setProteinPortion(existingMeal.protein_portion || "None");
+    setProteinFood(existingMeal.protein_food || "Tiada / 无");
+    setProteinPortion(existingMeal.protein_portion || "Tiada / 无");
 
-    setVegPortion(existingMeal.veg_portion || "None");
+    setVegPortion(existingMeal.veg_portion || "Tiada / 无");
 
-    setDrink(existingMeal.drink || "None");
+    setDrink(existingMeal.drink || "Tiada / 无");
 
-    setFruit(existingMeal.fruit || "None");
-    setFruitPortion(existingMeal.fruit_portion || "None");
+    setFruit(existingMeal.fruit || "Tiada / 无");
+    setFruitPortion(existingMeal.fruit_portion || "Tiada / 无");
   }
 }, [existingMeal]);
 
@@ -499,7 +599,7 @@ function getMealScore(carb, veg, protein, drink, profile) {
     avoid_sugary_drink
   } = profile;
 
-  const hasProtein = protein && protein !== "None";
+  const hasProtein = protein && protein !== "Tiada / 无";
 
   const isSugaryDrink =
     drink.includes("gula") ||
@@ -586,8 +686,27 @@ const totalMainCarb =
   carbExchange2 +
   carbExchange3;
 
+const baseDrinkExchange =
+  Number(
+    drinkBaseExchangeMap[drink] || 0
+  );
+
+const extraSugarMilkExchange =
+  customizableDrinks.includes(drink)
+    ? Number(
+        sugarExchangeMap[drinkSugar] || 0
+      ) +
+      Number(
+        milkExchangeMap[drinkMilk] || 0
+      )
+    : 0;
+
+const drinkExchange =
+  baseDrinkExchange +
+  extraSugarMilkExchange;
+
 const totalCarb =
-  totalMainCarb + fruitCarb;
+  totalMainCarb + fruitCarb + drinkExchange;
 
   // =========================
   // 🚦 MEAL SCORING
@@ -727,6 +846,11 @@ if (existingMeal) {
       drink: drink === "Lain-lain / 其他"
         ? drinkOther
         : drink,
+      drink_exchange: drinkExchange,
+
+drink_sugar: drinkSugar,
+
+drink_milk: drinkMilk,
 
       glucose_flag: glucoseFlag,
       meal_score: mealScore
@@ -780,6 +904,12 @@ if (existingMeal) {
     drink: drink === "Lain-lain / 其他"
       ? drinkOther
       : drink,
+
+    drink_exchange: drinkExchange,
+
+drink_sugar: drinkSugar,
+
+drink_milk: drinkMilk,
 
     glucose_flag: glucoseFlag,
     meal_score: mealScore
@@ -1148,7 +1278,63 @@ return (
     value={drinkOther}
     onChange={(e)=>setDrinkOther(e.target.value)}
   />
+  
 )}
+<p>
+  🍬 Gula / 糖
+</p>
+{customizableDrinks.includes(drink) && (
+  <>
+<select
+  value={drinkSugar}
+  onChange={(e) =>
+    setDrinkSugar(e.target.value)
+  }
+>
+  {Object.keys(sugarExchangeMap).map((s, i) => (
+    <option key={i} value={s}>
+      {s}
+    </option>
+  ))}
+</select>
+<p>
+  🥛 Susu / 奶类
+</p>
+
+<select
+  value={drinkMilk}
+  onChange={(e) =>
+    setDrinkMilk(e.target.value)
+  }
+>
+  {Object.keys(milkExchangeMap).map((m, i) => (
+    <option key={i} value={m}>
+      {m}
+    </option>
+  ))}
+</select>
+  </>
+)}
+<p>
+  🥤🧮 Pertukaran Karbohidrat Minuman /
+  饮料碳水换算:
+  <strong style={{ color: "orange" }}>
+    {" "}
+    {drinkExchange}
+  </strong>
+</p>
+<p
+  style={{
+    fontSize: "12px",
+    color: "#666"
+  }}
+>
+  💡 Minuman manis, minuman coklat,
+  teh/kopi bersusu, minuman kotak atau berkarbonat
+  mungkin mengandungi karbohidrat tambahan.
+  <br />
+  甜饮、巧克力饮料、奶茶/咖啡、盒装饮料或汽水可能含有额外碳水化合物。
+</p>
 
       <br/><br/>
       <button onClick={saveMeal}>Simpan / 保存</button>
