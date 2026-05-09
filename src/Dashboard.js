@@ -373,7 +373,39 @@ const getColor = (status) => {
 };
 
 const totalExchange =
-  Number(meal.total_exchange || 0);
+  isEditing
+    ? (
+        Number(
+          calculateCarbExchange(
+            editingMeal.carb_food,
+            editingMeal.carb_portion
+          )
+        ) +
+
+        Number(
+          calculateCarbExchange(
+            editingMeal.carb_food2,
+            editingMeal.carb_portion2
+          )
+        ) +
+
+        Number(
+          calculateCarbExchange(
+            editingMeal.carb_food3,
+            editingMeal.carb_portion3
+          )
+        ) +
+
+        Number(
+          fruitExchangeMap?.[
+            editingMeal.fruit
+          ]?.[
+            editingMeal.fruit_portion
+          ] || 0
+        )
+      )
+
+    : Number(meal.total_exchange || 0);
 
 const maxCarb = profile?.carb_max || 3;
 const saveInlineEdit = async () => {
