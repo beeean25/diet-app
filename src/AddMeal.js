@@ -249,9 +249,7 @@ export const drinkBaseExchangeMap = {
 
   "Air kosong / 白开水": 0,
 
-  "Teh / 茶": 0,
-
-  "Kopi / 咖啡": 0,
+  "Teh/Kopi / 茶/咖啡": 0,
 
   "Kopi 3 dalam 1 / 3合1咖啡": 1, 
   
@@ -280,9 +278,7 @@ export const drinkBaseExchangeMap = {
   "Lain-lain / 其他": 0
 };
 const customizableDrinks = [
-  "Teh / 茶",
-
-  "Kopi / 咖啡",
+  "Teh/Kopi / 茶/咖啡",
 
   "Minuman coklat atau bermalta / 巧克力或麦芽饮料"
 ];
