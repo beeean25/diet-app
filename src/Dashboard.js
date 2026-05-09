@@ -6,6 +6,9 @@ import AddMeal, {
   fruitExchangeMap,
   proteinMap,
   drinkOptions,
+  sugarExchangeMap,
+  milkExchangeMap,
+  drinkBaseExchangeMap,
   calculateCarbExchange
 } from "./AddMeal";
 import GlucoseForm from "./GlucoseForm";
@@ -59,6 +62,9 @@ const [selectedDate, setSelectedDate] = useState("");
   total_exchange,
 
   drink,
+drink_exchange,
+drink_sugar,
+drink_milk,
   meal_score
 `)
       .eq("user_id", user?.id)
@@ -371,6 +377,24 @@ const getColor = (status) => {
   if (status.includes("Tiada")) return "gray";
   return "red";
 };
+const liveDrinkExchange =
+  Number(
+    drinkBaseExchangeMap[
+      editingMeal?.drink
+    ] || 0
+  ) +
+
+  Number(
+    sugarExchangeMap[
+      editingMeal?.drink_sugar
+    ] || 0
+  ) +
+
+  Number(
+    milkExchangeMap[
+      editingMeal?.drink_milk
+    ] || 0
+  );
 
 const totalExchange =
   isEditing
@@ -403,6 +427,7 @@ const totalExchange =
             editingMeal.fruit_portion
           ] || 0
         )
+        + Number(liveDrinkExchange || 0)
       )
 
     : Number(meal.total_exchange || 0);
@@ -492,11 +517,55 @@ total_exchange:
     ]?.[
       editingMeal.fruit_portion
     ] || 0
+  ) +
+
+  Number(
+    drinkBaseExchangeMap[
+      editingMeal.drink
+    ] || 0
+  ) +
+
+  Number(
+    sugarExchangeMap[
+      editingMeal.drink_sugar
+    ] || 0
+  ) +
+
+  Number(
+    milkExchangeMap[
+      editingMeal.drink_milk
+    ] || 0
   ),
-  drink:
-    editingMeal.drink === "Lain-lain / 其他"
-      ? editingMeal.drink_other
-      : editingMeal.drink
+
+drink:
+  editingMeal.drink === "Lain-lain / 其他"
+    ? editingMeal.drink_other
+    : editingMeal.drink,
+
+drink_exchange:
+  Number(
+    drinkBaseExchangeMap[
+      editingMeal.drink
+    ] || 0
+  ) +
+
+  Number(
+    sugarExchangeMap[
+      editingMeal.drink_sugar
+    ] || 0
+  ) +
+
+  Number(
+    milkExchangeMap[
+      editingMeal.drink_milk
+    ] || 0
+  ),
+
+drink_sugar:
+  editingMeal.drink_sugar,
+
+drink_milk:
+  editingMeal.drink_milk,
 };
 
 const { data: mealUpdateData, error } = await supabase
@@ -976,7 +1045,54 @@ await fetchMeals();
         <option key={i} value={d}>{d}</option>
       ))}
     </select>
+ {[
+      "Teh/Kopi / 茶/咖啡",
+      "Minuman coklat atau bermalta / 巧克力或麦芽饮料"
+    ].includes(editingMeal.drink) && (
+      <>
+        <p>🍬 Gula / 糖</p>
 
+        <select
+          value={
+            editingMeal.drink_sugar ||
+            "Tiada gula / 无糖"
+          }
+          onChange={(e) =>
+            setEditingMeal({
+              ...editingMeal,
+              drink_sugar: e.target.value
+            })
+          }
+        >
+          {Object.keys(sugarExchangeMap).map((s, i) => (
+            <option key={i} value={s}>
+              {s}
+            </option>
+          ))}
+        </select>
+
+        <p>🥛 Susu / 奶类</p>
+
+        <select
+          value={
+            editingMeal.drink_milk ||
+            "Tiada susu / 无奶"
+          }
+          onChange={(e) =>
+            setEditingMeal({
+              ...editingMeal,
+              drink_milk: e.target.value
+            })
+          }
+        >
+          {Object.keys(milkExchangeMap).map((m, i) => (
+            <option key={i} value={m}>
+              {m}
+            </option>
+          ))}
+        </select>
+      </>
+    )}
     {/* 👇 ONLY if Others */}
     {editingMeal.drink === "Lain-lain / 其他" && (
       <input
@@ -993,13 +1109,30 @@ await fetchMeals();
     )}
   </>
 ) : (
+  <>
+    <p>
+  🥤 Drink:{" "}
+  {meal.drink === "Lain-lain / 其他"
+    ? meal.drink_other || "Lain-lain / 其他"
+    : meal.drink || "-"}
+</p>
+
+{meal.drink_sugar &&
+ meal.drink_sugar !== "Tiada gula / 无糖" && (
   <p>
-    🥤 Drink:{" "}
-    {meal.drink === "Lain-lain / 其他"
-      ? meal.drink_other || "Lain-lain / 其他"
-      : meal.drink || "-"}
+    🍬 Gula / 糖:
+    {meal.drink_sugar}
   </p>
 )}
+
+{meal.drink_milk &&
+ meal.drink_milk !== "Tiada susu / 无奶" && (
+  <p>
+    🥛 Susu / 奶类:
+    {meal.drink_milk}
+  </p>
+)}
+
 <p>
   🥤🧮 Pertukaran Karbohidrat Minuman /
   饮料碳水换算:
@@ -1019,6 +1152,9 @@ await fetchMeals();
     ? "⚠ Melebihi had / 超出目标"
     : "✅ Dalam had / 在目标内"}
 </p>
+    </>
+)}
+
 {isEditing && (
   <div style={{ marginTop: 10, marginBottom: 10 }}>
 
