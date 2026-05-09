@@ -783,7 +783,7 @@ await fetchMeals();
     )}
 
     <p>
-      🧮 Pertukaran Karbohidrat / 碳水换算分量:{" "}
+      🧮 Pertukaran Karbohidrat Makanan Utama/ 主食碳水换算分量:{" "}
 
   <strong style={{ color: "orange" }}>
     {isEditing
@@ -951,7 +951,7 @@ await fetchMeals();
 )}
 
 <p>
-  🧮 Pertukaran Karbohidrat / 碳水换算分量:{" "}
+  🧮 Pertukaran Karbohidrat Buah-buahan / 水果碳水换算分量:{" "}
   <strong style={{ color: "orange" }}>
     {isEditing ? liveFruitExchange : (meal.fruit_exchange ?? 0)}
   </strong>
@@ -1000,6 +1000,14 @@ await fetchMeals();
       : meal.drink || "-"}
   </p>
 )}
+<p>
+  🥤🧮 Pertukaran Karbohidrat Minuman /
+  饮料碳水换算:
+  <strong style={{ color: "orange" }}>
+    {" "}
+    {drinkExchange}
+  </strong>
+</p>
 <p>🎯 Had Karbohidrat/ 碳水化合物上限: {maxCarb}</p>
 
 <p style={{

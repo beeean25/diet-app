@@ -1311,14 +1311,6 @@ return (
 </select>
   </>
 )}
-<p>
-  🥤🧮 Pertukaran Karbohidrat Minuman /
-  饮料碳水换算:
-  <strong style={{ color: "orange" }}>
-    {" "}
-    {drinkExchange}
-  </strong>
-</p>
 <p
   style={{
     fontSize: "12px",
