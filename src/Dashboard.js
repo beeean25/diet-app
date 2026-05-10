@@ -792,13 +792,19 @@ await fetchMeals();
         </select>
 
         <select
-          value={
-  editingMeal.carb_portion2 === "None" ||
-  editingMeal.carb_portion2 === "Tiada / 无"
-    ? "Sila pilih / 请选择"
-    : editingMeal.carb_portion2
-}
-        >
+  value={
+    editingMeal.carb_portion2 === "None" ||
+    editingMeal.carb_portion2 === "Tiada / 无"
+      ? "Sila pilih / 请选择"
+      : editingMeal.carb_portion2
+  }
+  onChange={(e) =>
+    setEditingMeal({
+      ...editingMeal,
+      carb_portion2: e.target.value
+    })
+  }
+>
           <option value="Sila pilih / 请选择">
   Sila pilih / 请选择
 </option>
@@ -835,13 +841,19 @@ await fetchMeals();
         </select>
 
         <select
-          value={
-  editingMeal.carb_portion3 === "None" ||
-  editingMeal.carb_portion3 === "Tiada / 无"
-    ? "Sila pilih / 请选择"
-    : editingMeal.carb_portion3
-}
-        >
+  value={
+    editingMeal.carb_portion3 === "None" ||
+    editingMeal.carb_portion3 === "Tiada / 无"
+      ? "Sila pilih / 请选择"
+      : editingMeal.carb_portion3
+  }
+  onChange={(e) =>
+    setEditingMeal({
+      ...editingMeal,
+      carb_portion3: e.target.value
+    })
+  }
+>
           <option value="Sila pilih / 请选择">
   Sila pilih / 请选择
 </option>
