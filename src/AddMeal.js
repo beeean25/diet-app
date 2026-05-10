@@ -470,27 +470,27 @@ export default function AddMeal({
   const [mealType, setMealType] = useState("Sarapan pagi （早餐）");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
-  const [carbFood, setCarbFood] = useState("Tiada / 无");
+  const [carbFood, setCarbFood] = useState("None");
   const [carbPortion, setCarbPortion] =
   useState("Sila pilih / 请选择");
-  const [carbFood2, setCarbFood2] = useState("Tiada / 无");
+  const [carbFood2, setCarbFood2] = useState("None");
 const [carbPortion2, setCarbPortion2] = useState("Sila pilih / 请选择");
-const [carbFood3, setCarbFood3] = useState("Tiada / 无");
+const [carbFood3, setCarbFood3] = useState("None");
 const [carbPortion3, setCarbPortion3] = useState("Sila pilih / 请选择");
   const [carbOtherFood, setCarbOtherFood] = useState("");
   const [carbOtherPortion, setCarbOtherPortion] = useState("");
   const [showCarb2, setShowCarb2] = useState(false);
 const [showCarb3, setShowCarb3] = useState(false);
 
-  const [proteinFood, setProteinFood] = useState("Tiada / 无");
+  const [proteinFood, setProteinFood] = useState("None");
   const [proteinPortion, setProteinPortion] = useState("Sila pilih / 请选择");
   const [proteinOtherFood, setProteinOtherFood] = useState("");
   const [proteinOtherPortion, setProteinOtherPortion] = useState("");
 
-  const [vegPortion, setVegPortion] = useState("Tiada / 无");
+  const [vegPortion, setVegPortion] = useState("None");
   const [vegOther, setVegOther] = useState("");
 
-  const [drink, setDrink] = useState("Tiada / 无");
+  const [drink, setDrink] = useState("None");
   const [drinkSugar, setDrinkSugar] =
   useState("Tiada gula / 无糖");
 
