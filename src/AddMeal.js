@@ -1,12 +1,11 @@
  import { useState, useEffect } from "react";
 import { supabase } from "./supabaseClient";
-import { useNavigate } from "react-router-dom";
 import { getMealIssues, vegToCupMap } from "./mealUtils";
 // =========================
   // 🍚 CARBOHYDRATE (FULL + GROUPED)
   // =========================
   export const carbMap = {
-    "None": ["Tiada / 无"],
+   "None": [],
 
     // GRAINS
     "Rice / Nasi / 米饭": [
@@ -58,7 +57,7 @@ import { getMealIssues, vegToCupMap } from "./mealUtils";
 // 🍎 FRUIT (GROUPED)
 // =========================
 export const fruitMap = {
-  "None": ["Tiada / 无"],
+  "None": [],
 
   "Epal/oren/pir 苹果/橙子/梨子": [
    "1/2  kecil / 半粒（小）",
@@ -184,7 +183,7 @@ export const fruitExchangeMap = {
   // 🍗 PROTEIN
   // =========================
   export const proteinMap = {
-    "None": ["Tiada / 无"],
+    "None": [],
     "Chicken / Ayam / 鸡": ["1 ketul / 1块","2 ketul / 2块","3 ketul / 3块","4 ketul / 4块","Lain-lain / 其他"],
     "Fish / Ikan / 鱼": ["1 ekor / 1条","1 ketul / 1块","Lain-lain / 其他"],
     "Prawn / Udang / 虾": ["1 besar / 1只大虾","2 besar / 2只大虾","1 senduk / 1勺","Lain-lain / 其他"],
@@ -197,16 +196,16 @@ export const fruitExchangeMap = {
     "Lain-lain / 其他": ["Lain-lain / 其他"]
   };
   export const vegOptions = [
-    "Tiada / 无","1/2 cawan/senduk / 半杯/勺","1 cawan/senduk / 1杯/勺",
+    "None","1/2 cawan/senduk / 半杯/勺","1 cawan/senduk / 1杯/勺",
     "1 1/2 cawan/senduk / 1杯半/勺","2 cawan/senduk / 2杯/勺",
     "3 cawan/senduk / 3杯/勺","1 sudu besar / 1大匙",
     "2 sudu besar / 2大匙","3 sudu besar / 3大匙","Lain-lain / 其他"
   ];
 
   export const drinkOptions = [
-    "Tiada / 无","Air kosong / 白开水","Teh/Kopi / 茶/咖啡","Teh tarik / 拉茶", "Kopi susu / 奶咖啡",
+    "None","Air kosong / 白开水","Teh/Kopi / 茶/咖啡","Teh tarik / 拉茶", "Kopi susu / 奶咖啡",
     "Kopi 3 dalam 1 / 3合1咖啡", "Kopi putih 3 dalam 1 / 3合1白咖啡", "Minuman coklat atau bermalta / 巧克力或麦芽饮料", "Minuman soya / 豆奶", "Minuman soya (tanpa gula) / 豆奶 (无添加糖)",
-    "Susu kosong / 牛奶","Susu berperisa / 调味奶","Minuman berkotak / 盒装饮料","Minuman berkarbonat / 汽水","Buble tea / 珍珠奶茶","Lain-lain / 其他"
+    "Susu kosong / 牛奶","Susu berperisa / 调味奶","Minuman berkotak / 盒装饮料","Minuman berkarbonat / 汽水","Bubble tea / 珍珠奶茶","Lain-lain / 其他"
   ];
   export const sugarExchangeMap = {
   "Tiada gula / 无糖": 0,
@@ -466,7 +465,6 @@ export default function AddMeal({
   existingMeal, 
   onSave }){
   const [loggingOut, setLoggingOut] = useState(false);
-  const navigate = useNavigate();
   const [mealType, setMealType] = useState("Sarapan pagi （早餐）");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
@@ -498,7 +496,7 @@ const [drinkMilk, setDrinkMilk] =
   useState("Tiada susu / 无奶");
   const [drinkOther, setDrinkOther] = useState("");
 
-  const [fruit, setFruit] = useState("Tiada / 无");
+  const [fruit, setFruit] = useState("None");
 const [fruitPortion, setFruitPortion] = useState("Sila pilih / 请选择");
 const [fruitOtherPortion, setFruitOtherPortion] = useState("");
   const [fruitOther, setFruitOther] = useState("");
@@ -507,21 +505,23 @@ const [fruitOtherPortion, setFruitOtherPortion] = useState("");
   
   // 🔄 Reset form after save
 const resetForm = () => {
-  setMealType("");
-  setCarbFood("");
-  setCarbPortion("");
-  setCarbFood2("Tiada / 无");
+  setMealType("Sarapan pagi （早餐）");
+  setCarbFood("None");
+  setCarbPortion("Sila pilih / 请选择");
+  setCarbFood2("None");
   setCarbPortion2("Sila pilih / 请选择");
-  setCarbFood3("Tiada / 无");
+  setCarbFood3("None");
   setCarbPortion3("Sila pilih / 请选择");
   setShowCarb2(false);
   setShowCarb3(false);
-  setProteinFood("");
+  setProteinFood("None");
   setProteinPortion("Sila pilih / 请选择");
-  setVegPortion("");
-  setFruit("Tiada / 无");
-  setFruitPortion("");
-  setDrink("");
+  setVegPortion("None");
+  setFruit("None");
+  setFruitPortion("Sila pilih / 请选择");
+  setDrink("None");
+  setDrinkSugar("Tiada gula / 无糖");
+  setDrinkMilk("Tiada susu / 无奶");
 
   // optional fields (if you have them)
   setProteinOtherFood("");
@@ -539,52 +539,84 @@ useEffect(() => {
     setDate(existingMeal.date || "");
     setTime(existingMeal.time || "");
 
-    setCarbFood(existingMeal.carb_food || "Tiada / 无");
+    setCarbFood(existingMeal.carb_food || "None");
     setCarbPortion(existingMeal.carb_portion || "Sila pilih / 请选择");
 
-    setCarbFood2(existingMeal.carb_food2 || "Tiada / 无");
+    setCarbFood2(existingMeal.carb_food2 || "None");
     setCarbPortion2(existingMeal.carb_portion2 || "Sila pilih / 请选择");
 
-    setCarbFood3(existingMeal.carb_food3 || "Tiada / 无");
+    setCarbFood3(existingMeal.carb_food3 || "None");
     setCarbPortion3(existingMeal.carb_portion3 || "Sila pilih / 请选择");
 
-    if (existingMeal.carb_food2) {
+    if (
+  existingMeal.carb_food2 &&
+  existingMeal.carb_food2 !== "None"
+) {
   setShowCarb2(true);
 }
 
-if (existingMeal.carb_food3) {
+if (
+  existingMeal.carb_food3 &&
+  existingMeal.carb_food3 !== "None"
+) {
   setShowCarb3(true);
 }
-    setProteinFood(existingMeal.protein_food || "Tiada / 无");
+    setProteinFood(existingMeal.protein_food || "None");
     setProteinPortion(existingMeal.protein_portion || "Sila pilih / 请选择");
 
-    setVegPortion(existingMeal.veg_portion || "Tiada / 无");
+    setVegPortion(existingMeal.veg_portion || "None");
 
-    setDrink(existingMeal.drink || "Tiada / 无");
+    setDrink(existingMeal.drink || "None");
+setDrinkSugar(
+  existingMeal.drink_sugar ||
+  "Tiada gula / 无糖"
+);
 
-    setFruit(existingMeal.fruit || "Tiada / 无");
+setDrinkMilk(
+  existingMeal.drink_milk ||
+  "Tiada susu / 无奶"
+);
+    setFruit(existingMeal.fruit || "None");
     setFruitPortion(existingMeal.fruit_portion || "Sila pilih / 请选择");
   }
 }, [existingMeal]);
 
   const handleLogout = async () => {
+  if (loggingOut) return;
+
   setLoggingOut(true);
 
-  const { error } = await supabase.auth.signOut();
+  try {
+    const { error } =
+      await supabase.auth.signOut();
 
-  if (error) {
-    alert(error.message);
+    if (error) {
+      alert(error.message);
+      setLoggingOut(false);
+      return;
+    }
+setLoggingOut(false);
+    window.location.replace("/login");
+
+  } catch (err) {
+    console.log(err);
+
+    alert("Logout failed");
+
     setLoggingOut(false);
-  } else {
-   navigate("/login");   // 👈 ADD HERE
   }
-  setLoggingOut(false); 
 };
 
 // =========================
 // 🚦 CUSTOM MEAL SCORING (ADVANCED)
 // =========================
-function getMealScore(carb, veg, protein, drink, profile) {
+function getMealScore(
+  carb,
+  veg,
+  protein,
+  drinkExchange,
+  profile
+) {
 
   if (!profile) return "No Profile / 无设置";
 
@@ -595,7 +627,8 @@ function getMealScore(carb, veg, protein, drink, profile) {
     avoid_sugary_drink
   } = profile;
 
-  const hasProtein = protein && protein !== "Tiada / 无";
+  const hasProtein =
+  protein && protein !== "None";
 
   const isSugaryDrink =
     drink.includes("gula") ||
@@ -604,6 +637,8 @@ function getMealScore(carb, veg, protein, drink, profile) {
     drink.includes("susu manis") ||
     drink.includes("cordial") ||
     drink.includes("coklat") ||
+    drink.includes("bubble tea") ||
+    drink.includes("3 dalam 1") ||
     drink.includes("berperisa");
 
 const issues = getMealIssues({
@@ -638,6 +673,58 @@ if (!user?.id) {
     alert("User not logged in");
     return;
   }
+  if (
+    carbFood !== "None" &&
+    carbPortion === "Sila pilih / 请选择"
+  ) {
+    alert(
+      "Sila pilih portion karbohidrat / 请选择碳水份量"
+    );
+    return;
+  }
+
+  if (
+    carbFood2 !== "None" &&
+    carbPortion2 === "Sila pilih / 请选择"
+  ) {
+    alert(
+      "Sila pilih portion karbohidrat 2 / 请选择碳水2份量"
+    );
+    return;
+  }
+
+  if (
+    carbFood3 !== "None" &&
+    carbPortion3 === "Sila pilih / 请选择"
+  ) {
+    alert(
+      "Sila pilih portion karbohidrat 3 / 请选择碳水3份量"
+    );
+    return;
+  }
+
+  if (
+    fruit !== "None" &&
+    !fruit.includes("Lain-lain") &&
+    fruitPortion === "Sila pilih / 请选择"
+  ) {
+    alert(
+      "Sila pilih portion buah / 请选择水果份量"
+    );
+    return;
+  }
+
+  if (
+    proteinFood !== "None" &&
+    proteinFood !== "Lain-lain / 其他" &&
+    proteinPortion === "Sila pilih / 请选择"
+  ) {
+    alert(
+      "Sila pilih portion protein / 请选择蛋白质份量"
+    );
+    return;
+  }
+
 const userId = user?.id;
 
   // =========================
@@ -713,7 +800,7 @@ const mealScore = getMealScore(
   totalCarb,
   vegPortion,
   proteinFood,
-  drink,
+  drinkExchange,
   profile
 );
 // =========================
@@ -948,13 +1035,24 @@ return (
     
       <h3>Tambah Hidangan / 添加餐点</h3>
 
-      <input type="date" onChange={(e)=>setDate(e.target.value)} />
+      <input
+  type="date"
+  value={date}
+  onChange={(e)=>setDate(e.target.value)}
+/>
       <br/><br/>
-      <input type="time" onChange={(e)=>setTime(e.target.value)} />
+      <input
+  type="time"
+  value={time}
+  onChange={(e)=>setTime(e.target.value)}
+/>
       <br/><br/>
 
       <h4>Jenis Hidangan / 餐类</h4>
-     <select onChange={(e)=>setMealType(e.target.value)}>
+     <select
+  value={mealType}
+  onChange={(e)=>setMealType(e.target.value)}
+>
       <option value="Sarapan pagi （早餐）">Sarapan pagi / 早餐</option>
       <option value="Makan tengahari （午餐）">Makan tengahari / 午餐</option>
       <option value="Makan petang/malam （晚餐）">Makan petang/malam / 晚餐</option>
@@ -976,15 +1074,20 @@ return (
 
   setCarbFood(selectedFood);
 
-  const firstPortion =
-    (carbMap[selectedFood] || [])[0] || "";
-
-  setCarbPortion(firstPortion);
+  if (selectedFood === "None") {
+  setCarbPortion("None");
+} else {
+  setCarbPortion("Sila pilih / 请选择");
+}
 }}
 >
-  {Object.keys(carbMap).map((c,i)=>(
-    <option key={i} value={c}>{c}</option>
-  ))}
+  {Object.keys(carbMap).map((c, i) => (
+  <option key={i} value={c}>
+    {c === "None"
+      ? "Tiada / 无"
+      : c}
+  </option>
+))}
 </select>
 
 {/* 👇 SHOW when FOOD = Others */}
@@ -1051,16 +1154,19 @@ return (
 
   setCarbFood2(selectedFood);
 
-  const firstPortion =
-    (carbMap[selectedFood] || [])[0] || "";
-
-  setCarbPortion2(firstPortion);
+  if (selectedFood === "None") {
+  setCarbPortion2("None");
+} else {
+  setCarbPortion2("Sila pilih / 请选择");
+}
 }}
     >
       {Object.keys(carbMap).map((c, i) => (
         <option key={i} value={c}>
-          {c}
-        </option>
+  {c === "None"
+    ? "Tiada / 无"
+    : c}
+</option>
       ))}
     </select>
 
@@ -1100,16 +1206,19 @@ return (
 
   setCarbFood3(selectedFood);
 
-  const firstPortion =
-    (carbMap[selectedFood] || [])[0] || "";
-
-  setCarbPortion3(firstPortion);
+  if (selectedFood === "None") {
+  setCarbPortion3("None");
+} else {
+  setCarbPortion3("Sila pilih / 请选择");
+}
 }}
     >
       {Object.keys(carbMap).map((c, i) => (
         <option key={i} value={c}>
-          {c}
-        </option>
+  {c === "None"
+    ? "Tiada / 无"
+    : c}
+</option>
       ))}
     </select>
 
@@ -1138,11 +1247,15 @@ return (
   value={proteinFood}
   onChange={(e)=>{
     setProteinFood(e.target.value);
-    setProteinPortion("None");
+    setProteinPortion("Sila pilih / 请选择");
   }}
 >
   {Object.keys(proteinMap).map((p,i)=>(
-    <option key={i}>{p}</option>
+    <option key={i} value={p}>
+  {p === "None"
+    ? "Tiada / 无"
+    : p}
+</option>
   ))}
 </select>
 
@@ -1176,7 +1289,9 @@ return (
   Sila pilih / 请选择
 </option>
       {(proteinMap[proteinFood] || []).map((p,i)=>(
-        <option key={i}>{p}</option>
+        <option key={i} value={p}>
+  {p}
+</option>
       ))}
     </select>
 
@@ -1199,7 +1314,11 @@ return (
   onChange={(e)=>setVegPortion(e.target.value)}
 >
   {vegOptions.map((v,i)=>(
-    <option key={i}>{v}</option>
+    <option key={i} value={v}>
+  {v === "None"
+    ? "Tiada / 无"
+    : v}
+</option>
   ))}
 </select>
 
@@ -1222,11 +1341,11 @@ return (
   setFruit(selectedFruit);
 
   // ✅ AUTO-SET FIRST PORTION
-  if (fruitMap[selectedFruit] && fruitMap[selectedFruit].length > 0) {
-    setFruitPortion(fruitMap[selectedFruit][0]);
-  } else {
-    setFruitPortion("None");
-  }
+  if (selectedFruit === "None") {
+  setFruitPortion("None");
+} else {
+  setFruitPortion("Sila pilih / 请选择");
+}
 
   // reset others
   setFruitOther("");
@@ -1234,20 +1353,30 @@ return (
 }}
 >
   {Object.keys(fruitMap).map((v, i) => (
-    <option key={i} value={v}>{v}</option>
+    <option key={i} value={v}>
+  {v === "None"
+    ? "Tiada / 无"
+    : v}
+</option>
   ))}
 </select>
 
 {/* IF NORMAL FRUIT → show portion dropdown */}
 {fruit !== "None" && !fruit.includes("Lain-lain") && (
   <select
-    value={fruitPortion}
-    onChange={(e)=>setFruitPortion(e.target.value)}
-  >
-    {fruitMap[fruit]?.map((p, i) => (
-      <option key={i} value={p}>{p}</option>
-    ))}
-  </select>
+  value={fruitPortion}
+  onChange={(e)=>setFruitPortion(e.target.value)}
+>
+  <option value="Sila pilih / 请选择">
+    Sila pilih / 请选择
+  </option>
+
+  {fruitMap[fruit]?.map((p, i) => (
+    <option key={i} value={p}>
+      {p}
+    </option>
+  ))}
+</select>
 )}
 
 {/* IF OTHERS → show TWO INPUTS (like protein) */}
@@ -1291,8 +1420,10 @@ return (
 >
   {drinkOptions.map((d, i) => (
     <option key={i} value={d}>
-      {d}
-    </option>
+  {d === "None"
+    ? "Tiada / 无"
+    : d}
+</option>
   ))}
 </select>
 

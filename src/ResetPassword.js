@@ -1,7 +1,7 @@
 import { supabase } from "./supabaseClient";
 import { useState, useEffect } from "react";
 
-export default function ResetPassword({ onDone }) {
+export default function ResetPassword() {
   const [password, setPassword] = useState("");
   const [updating, setUpdating] = useState(false);
  useEffect(() => {

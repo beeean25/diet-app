@@ -11,7 +11,7 @@ export default function Login() {
     password,
     options: {
     emailRedirectTo:
-      "https://diet-app-nine-ruddy.vercel.app/login"
+  "https://diet-app-nine-ruddy.vercel.app/profile"
   }
   });
 
