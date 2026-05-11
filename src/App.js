@@ -114,11 +114,7 @@ if (isRecoveryMode) {
   console.log("🔐 Recovery Mode");
 
   return (
-    <ResetPassword
-      onDone={() => {
-        window.location.href = "/login";
-      }}
-    />
+    <ResetPassword />
   );
 }
 

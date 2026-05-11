@@ -1,12 +1,9 @@
-import { useState } from "react";
 import { supabase } from "./supabaseClient";
-import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 
 export default function ResetPassword({ onDone }) {
   const [password, setPassword] = useState("");
   const [updating, setUpdating] = useState(false);
-    const navigate = useNavigate();
  useEffect(() => {
     const handleSession = async () => {
       console.log("🔐 Checking recovery session...");
@@ -63,11 +60,7 @@ window.history.replaceState(
   "/login"
 );
 
-if (onDone) {
-  onDone();
-} else {
-  navigate("/login");
-}
+window.location.replace("/login");
 
   } catch (err) {
 
