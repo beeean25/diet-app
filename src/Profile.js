@@ -21,7 +21,7 @@ useEffect(() => {
       .from("profile")
       .select("*")
       .eq("id", user.id)
-      .single();
+      .maybeSingle();
 
     if (data) {
       setCarbMax(data.carb_max || "");

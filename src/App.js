@@ -18,11 +18,15 @@ const isProfileComplete = (profile) => {
     if (!profile) return false;
 
     return (
-      profile.carb_max &&
-      profile.veg_min_cup &&
-      profile.req_protein !== undefined &&
-      profile.avoid_sugary_drink !== undefined
-    );
+  profile.carb_max !== undefined &&
+  profile.carb_max !== null &&
+
+  profile.veg_min_cup !== undefined &&
+  profile.veg_min_cup !== null &&
+
+  profile.req_protein !== undefined &&
+  profile.avoid_sugary_drink !== undefined
+);
   };
   // 🔹 Load user on first render
 useEffect(() => {
