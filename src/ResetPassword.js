@@ -3,7 +3,7 @@ import { supabase } from "./supabaseClient";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 
-export default function ResetPassword() {
+export default function ResetPassword({ onDone }) {
   const [password, setPassword] = useState("");
   const [updating, setUpdating] = useState(false);
     const navigate = useNavigate();
@@ -54,13 +54,20 @@ export default function ResetPassword() {
 
     alert("Password updated! Please login again.");
 
-    setTimeout(async () => {
+    await supabase.auth.signOut();
+    setUpdating(false);
 
-      await supabase.auth.signOut();
+window.history.replaceState(
+  {},
+  document.title,
+  "/login"
+);
 
-      navigate("/login");
-
-    }, 1000);
+if (onDone) {
+  onDone();
+} else {
+  navigate("/login");
+}
 
   } catch (err) {
 
@@ -80,6 +87,7 @@ export default function ResetPassword() {
       <input
         type="password"
         placeholder="New Password"
+        value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
 

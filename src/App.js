@@ -12,8 +12,7 @@ function App() {
   const [loading, setLoading] = useState(true);
   const hash = window.location.hash;
 const isRecoveryMode =
-  hash.includes("type=recovery") ||
-  hash.includes("access_token");
+  hash.includes("type=recovery");
 const [initialized, setInitialized] = useState(false);
 const isProfileComplete = (profile) => {
     if (!profile) return false;
@@ -108,8 +107,15 @@ console.log("HASH:", window.location.hash);
 });
 if (loading) return <p>Loading...</p>;
 if (isRecoveryMode) {
-  console.log("🔐 Rendering ResetPassword directly");
-  return <ResetPassword />;
+  console.log("🔐 Recovery Mode");
+
+  return (
+    <ResetPassword
+      onDone={() => {
+        window.location.href = "/login";
+      }}
+    />
+  );
 }
 
 return (
