@@ -8,7 +8,7 @@ import ResetPassword from "./ResetPassword";
 
 function App() {
   const [user, setUser] = useState(null);
-  const [profile, setProfile] = useState(null);
+  const [profile, setProfile] = useState(undefined);
   const [loading, setLoading] = useState(true);
 
 const isRecoveryMode =
@@ -46,11 +46,7 @@ useEffect(() => {
           .eq("id", currentUser.id)
           .maybeSingle();
 
-        if (!profileData) {
-  setProfile(null);
-} else {
-  setProfile(profileData);
-}
+        setProfile(profileData || null);
       } else {
         setProfile(null);
       }
@@ -87,11 +83,7 @@ useEffect(() => {
           .eq("id", currentUser.id)
           .maybeSingle();
 
-        if (!profileData) {
-  setProfile(null);
-} else {
-  setProfile(profileData);
-}
+        setProfile(profileData || null);
       } else {
         setProfile(null);
       }
@@ -109,7 +101,9 @@ console.log("HASH:", window.location.hash);
   user,
   profile
 });
-if (loading) return <p>Loading...</p>;
+if (loading || (user && profile === undefined)) {
+  return <p>Loading...</p>;
+}
 
 if (isRecoveryMode) {
   return <ResetPassword />;

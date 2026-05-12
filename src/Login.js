@@ -24,9 +24,22 @@ export default function Login() {
 };
 
   const login = async () => {
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) alert(error.message);
-  };
+
+  const { data, error } =
+    await supabase.auth.signInWithPassword({
+      email,
+      password
+    });
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  console.log("LOGIN SUCCESS:", data);
+
+  window.location.replace("/dashboard");
+};
 const resetPassword = async () => {
     if (!email) {
       alert("Please enter your email / 请输入邮箱");
