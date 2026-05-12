@@ -244,7 +244,7 @@ export const milkExchangeMap = {
   "Krimer manis 3 sudu makan/ 炼奶3汤匙": 1.5
 };
 export const drinkBaseExchangeMap = {
-  "Tiada / 无": 0,
+  "None": 0,
 
   "Air kosong / 白开水": 0,
 
@@ -441,6 +441,7 @@ if (!group) {
     "❌ FOOD NOT FOUND:",
     carb_food
   );
+
   return 0;
 }
 
@@ -630,16 +631,18 @@ function getMealScore(
   const hasProtein =
   protein && protein !== "None";
 
-  const isSugaryDrink =
-    drink.includes("gula") ||
-    drink.includes("tealive") ||
-    drink.includes("milo") ||
-    drink.includes("susu manis") ||
-    drink.includes("cordial") ||
-    drink.includes("coklat") ||
-    drink.includes("bubble tea") ||
-    drink.includes("3 dalam 1") ||
-    drink.includes("berperisa");
+  const safeDrink = drink || "";
+
+const isSugaryDrink =
+  safeDrink.includes("gula") ||
+  safeDrink.includes("tealive") ||
+  safeDrink.includes("milo") ||
+  safeDrink.includes("susu manis") ||
+  safeDrink.includes("cordial") ||
+  safeDrink.includes("coklat") ||
+  safeDrink.includes("bubble tea") ||
+  safeDrink.includes("3 dalam 1") ||
+  safeDrink.includes("berperisa");
 
 const issues = getMealIssues({
   carb,
@@ -669,6 +672,15 @@ const issues = getMealIssues({
   return "Diet perlu penambahbaikan / 饮食需改善: " + issues.join(", ");
 }
   const saveMeal = async () => {
+if (!date) {
+  alert("Sila pilih tarikh / 请选择日期");
+  return;
+}
+
+if (!time) {
+  alert("Sila pilih masa / 请选择时间");
+  return;
+}
 if (!user?.id) {
     alert("User not logged in");
     return;
@@ -1246,9 +1258,16 @@ return (
 <select
   value={proteinFood}
   onChange={(e)=>{
-    setProteinFood(e.target.value);
+  const selectedProtein = e.target.value;
+
+  setProteinFood(selectedProtein);
+
+  if (selectedProtein === "None") {
+    setProteinPortion("None");
+  } else {
     setProteinPortion("Sila pilih / 请选择");
-  }}
+  }
+}}
 >
   {Object.keys(proteinMap).map((p,i)=>(
     <option key={i} value={p}>
@@ -1380,7 +1399,8 @@ return (
 )}
 
 {/* IF OTHERS → show TWO INPUTS (like protein) */}
-{fruit.includes("Lain-lain") && (
+{fruit &&
+ fruit.includes("Lain-lain") && (
   <>
     <input
       type="text"
