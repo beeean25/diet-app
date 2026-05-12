@@ -742,7 +742,11 @@ await fetchMeals();
       }
     >
       {Object.keys(carbMap).map((c, i) => (
-        <option key={i} value={c}>{c}</option>
+        <option key={i} value={c}>
+  {c === "None"
+    ? "Tiada / 无"
+    : c}
+</option>
       ))}
     </select>
 
@@ -869,35 +873,42 @@ await fetchMeals();
   
 ) : (
   <>
-    <p>
-      🍚1: {meal.carb_food}
-      ({meal.carb_portion})
-    </p>
 
-    {meal.carb_food2 &&
- meal.carb_food2 !== "None" &&
- meal.carb_food2 !== "Tiada / 无" && (
-  <p>
-    🍚2: {meal.carb_food2}
+    {meal.carb_food &&
+     meal.carb_food !== "None" &&
+     meal.carb_food !== "Tiada / 无" && (
+      <p>
+        • {meal.carb_food}
 
-    {meal.carb_portion2 &&
-     meal.carb_portion2 !== "None" &&
-     ` (${meal.carb_portion2})`}
-  </p>
-)}
-
-    {meal.carb_food3 &&
- meal.carb_food3 !== "None" &&
- meal.carb_food3 !== "Tiada / 无" && (
-  <p>
-    🍚3: {meal.carb_food3}
-
-    {meal.carb_portion3 &&
-     meal.carb_portion3 !== "None" &&
-     ` (${meal.carb_portion3})`}
-  </p>
+        {meal.carb_portion &&
+         meal.carb_portion !== "None" &&
+         ` (${meal.carb_portion})`}
+      </p>
     )}
 
+    {meal.carb_food2 &&
+     meal.carb_food2 !== "None" &&
+     meal.carb_food2 !== "Tiada / 无" && (
+      <p>
+        • {meal.carb_food2}
+
+        {meal.carb_portion2 &&
+         meal.carb_portion2 !== "None" &&
+         ` (${meal.carb_portion2})`}
+      </p>
+    )}
+
+    {meal.carb_food3 &&
+     meal.carb_food3 !== "None" &&
+     meal.carb_food3 !== "Tiada / 无" && (
+      <p>
+        • {meal.carb_food3}
+
+        {meal.carb_portion3 &&
+         meal.carb_portion3 !== "None" &&
+         ` (${meal.carb_portion3})`}
+      </p>
+    )}
     <p>
       🧮 Pertukaran Karbohidrat Makanan Utama/ 主食碳水换算分量:{" "}
 
@@ -975,7 +986,11 @@ await fetchMeals();
     )}
   </>
 ) : (
-  <p>🍗: {meal.protein_food || "-"} ({meal.protein_portion || "-"})</p>
+  <p>🍗: {
+  meal.protein_food === "None"
+    ? "Tiada / 无"
+    : meal.protein_food || "-"
+} ({meal.protein_portion || "-"})</p>
 )}
       {/* 🥬 VEGETABLES */}
 <p><b>🥬 Sayur-sayuran / 蔬菜:</b></p>
@@ -991,7 +1006,7 @@ await fetchMeals();
         })
       }
     >
-      <option value="Tiada / 无">Tiada / 无</option>
+      <option value="None">Tiada / 无</option>
       <option value="1/2 cawan/senduk / 半杯/勺">1/2 cawan/senduk / 半杯/勺</option>
       <option value="1 cawan/senduk / 1杯/勺">1 cawan/senduk / 1杯/勺</option>
       <option value="1 1/2 cawan/senduk / 1杯半/勺">1 1/2 cawan/senduk / 1杯半/勺</option>
@@ -1067,7 +1082,11 @@ await fetchMeals();
   </>
 ) : (
   <p>
-    🍎: {meal.fruit || "None"}{" "}
+    🍎: {
+  meal.fruit === "None"
+    ? "Tiada / 无"
+    : meal.fruit || "Tiada / 无"
+}{" "}
     {meal.fruit_portion && `(${meal.fruit_portion})`}
   </p>
 )}
@@ -1085,8 +1104,8 @@ await fetchMeals();
   <>
     <select
       value={drinkOptions.includes(editingMeal.drink)
-        ? editingMeal.drink
-        : "Tiada / 无"}
+  ? editingMeal.drink
+  : "None"}
       onChange={(e) => {
   const selectedDrink =
     e.target.value;
