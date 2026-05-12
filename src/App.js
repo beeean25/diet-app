@@ -10,11 +10,9 @@ function App() {
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
-  const hash = window.location.hash;
 
 const isRecoveryMode =
-  hash.includes("type=recovery") ||
-  hash.includes("access_token");
+  window.location.pathname === "/reset-password";
 const [initialized, setInitialized] = useState(false);
 const isProfileComplete = (profile) => {
     if (!profile) return false;

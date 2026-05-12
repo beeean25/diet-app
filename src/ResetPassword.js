@@ -17,7 +17,12 @@ export default function ResetPassword() {
       alert("Please enter password");
       return;
     }
-
+if (password.length < 6) {
+  alert(
+    "Password mesti sekurang-kurangnya 6 aksara / 密码至少6位"
+  );
+  return;
+}
     setUpdating(true);
 
     try {
@@ -30,13 +35,15 @@ export default function ResetPassword() {
         });
 
       if (error) {
-        console.log(error);
 
-        alert(error.message);
+  console.log(error);
 
-        setUpdating(false);
-        return;
-      }
+  alert(error.message);
+
+  setUpdating(false);
+
+  return;
+}
 
       alert(
         "Password updated! Please login again."
