@@ -1,97 +1,88 @@
 import { supabase } from "./supabaseClient";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 export default function ResetPassword() {
-  const [password, setPassword] = useState("");
-  const [updating, setUpdating] = useState(false);
- useEffect(() => {
-    const handleSession = async () => {
-      console.log("🔐 Checking recovery session...");
 
-      const { data, error } = await supabase.auth.getSession();
+  const [password, setPassword] =
+    useState("");
 
-      console.log("SESSION:", data, error);
+  const [updating, setUpdating] =
+    useState(false);
 
-      if (!data?.session) {
-        console.log("❌ No session — reset will fail");
-      }
-    };
+  const updatePassword = async () => {
 
-    handleSession();
-  }, []);
-
- const updatePassword = async () => {
-
-  if (updating) return;
-
-  setUpdating(true);
-
-  try {
+    if (updating) return;
 
     if (!password) {
       alert("Please enter password");
-      setUpdating(false);
       return;
     }
 
-    console.log("🚀 Update clicked");
+    setUpdating(true);
 
-    const { data, error } = await supabase.auth.updateUser({
-      password: password
-    });
+    try {
 
-    console.log("RESULT:", data);
-    console.log("ERROR:", error);
+      console.log("🚀 Updating password...");
 
-    if (error) {
-      alert(error.message);
+      const { error } =
+        await supabase.auth.updateUser({
+          password
+        });
+
+      if (error) {
+        console.log(error);
+
+        alert(error.message);
+
+        setUpdating(false);
+        return;
+      }
+
+      alert(
+        "Password updated! Please login again."
+      );
+
+      await supabase.auth.signOut();
+
+      window.location.replace("/login");
+
+    } catch (err) {
+
+      console.log("RESET ERROR:", err);
+
+      alert("Reset failed");
+
       setUpdating(false);
-      return;
     }
-
-    alert("Password updated! Please login again.");
-
-    await supabase.auth.signOut();
-    setUpdating(false);
-
-window.history.replaceState(
-  {},
-  document.title,
-  "/login"
-);
-
-window.location.replace("/login");
-
-  } catch (err) {
-
-    console.log("RESET ERROR:", err);
-
-    alert("Reset failed");
-
-    setUpdating(false);
-  }
-};
-
+  };
 
   return (
     <div style={{ padding: 20 }}>
-      <h2>Reset Password / 重置密码</h2>
+
+      <h2>
+        Reset Password / 重置密码
+      </h2>
 
       <input
         type="password"
         placeholder="New Password"
         value={password}
-        onChange={(e) => setPassword(e.target.value)}
+        onChange={(e)=>
+          setPassword(e.target.value)
+        }
       />
 
       <br /><br />
 
       <button
-  onClick={updatePassword}
-  disabled={updating}
->
-  {updating ? "Updating..." : "Update Password"}
-</button>
+        onClick={updatePassword}
+        disabled={updating}
+      >
+        {updating
+          ? "Updating..."
+          : "Update Password"}
+      </button>
+
     </div>
   );
 }

@@ -10,6 +10,11 @@ function App() {
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+  const hash = window.location.hash;
+
+const isRecoveryMode =
+  hash.includes("type=recovery") ||
+  hash.includes("access_token");
 const [initialized, setInitialized] = useState(false);
 const isProfileComplete = (profile) => {
     if (!profile) return false;
@@ -66,6 +71,7 @@ useEffect(() => {
 
   // 🔹 Listen to login/logout changes
 useEffect(() => {
+  if (isRecoveryMode) return;
   const { data: listener } = supabase.auth.onAuthStateChange(
     async (event, session) => {
       console.log("🔄 AUTH CHANGE EVENT:", event);
@@ -95,7 +101,7 @@ useEffect(() => {
   );
 
   return () => listener.subscription.unsubscribe();
-}, [initialized]);
+}, [initialized, isRecoveryMode]);
 
 console.log("FULL URL:", window.location.href);
 console.log("HASH:", window.location.hash);
@@ -107,6 +113,9 @@ console.log("HASH:", window.location.hash);
 });
 if (loading) return <p>Loading...</p>;
 
+if (isRecoveryMode) {
+  return <ResetPassword />;
+}
 return (
   <Routes>
 
