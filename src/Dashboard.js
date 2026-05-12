@@ -986,11 +986,17 @@ await fetchMeals();
     )}
   </>
 ) : (
-  <p>🍗: {
-  meal.protein_food === "None"
-    ? "Tiada / 无"
-    : meal.protein_food || "-"
-} ({meal.protein_portion || "-"})</p>
+  <p>
+  • {
+    meal.protein_food === "None"
+      ? "Tiada / 无"
+      : meal.protein_food
+  }
+
+  {meal.protein_food !== "None" &&
+   meal.protein_portion &&
+   ` (${meal.protein_portion})`}
+</p>
 )}
       {/* 🥬 VEGETABLES */}
 <p><b>🥬 Sayur-sayuran / 蔬菜:</b></p>
@@ -1035,11 +1041,12 @@ await fetchMeals();
   </>
 ) : (
   <p>
-    🥗:{" "}
-    {meal.veg_portion === "Lain-lain / 其他"
-      ? meal.veg_other || "Lain-lain / 其他"
-      : meal.veg_portion || "-"}
-  </p>
+  • {
+    meal.veg_portion === "None"
+      ? "Tiada / 无"
+      : meal.veg_portion
+  }
+</p>
 )}
 <p><b>🍊 Buah-buahan / 水果:</b></p>
       {isEditing ? (
@@ -1082,13 +1089,16 @@ await fetchMeals();
   </>
 ) : (
   <p>
-    🍎: {
-  meal.fruit === "None"
-    ? "Tiada / 无"
-    : meal.fruit || "Tiada / 无"
-}{" "}
-    {meal.fruit_portion && `(${meal.fruit_portion})`}
-  </p>
+  • {
+    meal.fruit === "None"
+      ? "Tiada / 无"
+      : meal.fruit
+  }
+
+  {meal.fruit !== "None" &&
+   meal.fruit_portion &&
+   ` (${meal.fruit_portion})`}
+</p>
 )}
 
 <p>
@@ -1201,10 +1211,11 @@ await fetchMeals();
 ) : (
   <>
     <p>
-  🥤 Drink:{" "}
-  {meal.drink === "Lain-lain / 其他"
-    ? meal.drink_other || "Lain-lain / 其他"
-    : meal.drink || "-"}
+  • {
+    meal.drink === "None"
+      ? "Tiada / 无"
+      : meal.drink
+  }
 </p>
 
 {meal.drink_sugar &&
