@@ -4,6 +4,7 @@ import { supabase } from "./supabaseClient";
 export default function Profile({ user }) {
   const [carbMax, setCarbMax] = useState("");
   const [vegTarget, setVegTarget] = useState("");
+  const [username, setUsername] = useState("");
 const [requireProtein, setRequireProtein] = useState(true);
 const [avoidSugaryDrink, setAvoidSugaryDrink] = useState(true);
   const [loading, setLoading] = useState(true);
@@ -26,6 +27,7 @@ useEffect(() => {
     if (data) {
       setCarbMax(data.carb_max || "");
       setVegTarget(data.veg_min_cup || "");
+      setUsername(data.username || "");
       setRequireProtein(data.req_protein ?? true);
       setAvoidSugaryDrink(data.avoid_sugary_drink ?? true);
       setIsEdit(true);
@@ -56,6 +58,7 @@ const saveProfile = async () => {
       id: user.id,
       carb_max: Number(carbMax),
       veg_min_cup: Number(vegTarget),
+      username: username,
       req_protein: requireProtein,
       avoid_sugary_drink: avoidSugaryDrink
     }
@@ -83,7 +86,24 @@ const saveProfile = async () => {
           ? "Edit Profile / 编辑资料"
           : "Setup Profile / 设置资料"}
       </h2>
+<div style={{ marginTop: 10 }}>
 
+  <label>
+    Nama panggilan / 昵称:
+  </label>
+
+  <br />
+
+  <input
+    type="text"
+    value={username}
+    onChange={(e)=>
+      setUsername(e.target.value)
+    }
+    placeholder="Contoh: Ah Bee"
+  />
+
+</div>
       <div style={{ marginTop: 10 }}>
         <label>Max Carb per Meal:</label>
         <br />

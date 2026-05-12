@@ -262,11 +262,34 @@ const mealTimes = meals
 console.log("MEAL TIMES:", mealTimes);
 console.log("CHART TIMES:", glucoseChartData.map(d => d.time));
   return (
-    <div style={{ padding: 20 }}>
-      <h2>Dashboard / 仪表板</h2>
+    
+<div style={{ padding: 20 }}>
+  <h2>Dashboard / 仪表板</h2>
 
-      <GlucoseForm
-  user={user}   // 👈 ADD THIS
+  <h2>
+    👋 Hello / 你好,
+    {profile?.username || "User"}
+  </h2>
+
+  <button
+    onClick={() => {
+      window.location.href = "/profile";
+    }}
+    style={{
+      marginBottom: 15,
+      padding: "8px 12px",
+      borderRadius: 8,
+      border: "none",
+      backgroundColor: "#4CAF50",
+      color: "white",
+      cursor: "pointer"
+    }}
+  >
+    ⚙️ Edit Profile / 编辑资料
+  </button>
+
+  <GlucoseForm
+    user={user} // 👈 ADD THIS
   refresh={() => {
     fetchGlucose();
     fetchMeals();
@@ -955,11 +978,11 @@ await fetchMeals();
     {editingMeal.protein_food === "Lain-lain / 其他" ? (
       <input
         placeholder="Nyatakan protein / 输入蛋白质"
-        value={editingMeal.protein_food || ""}
+        value={editingMeal.protein_other || ""}
         onChange={(e) =>
           setEditingMeal({
             ...editingMeal,
-            protein_food: e.target.value
+            protein_other: e.target.value
           })
         }
       />
@@ -1142,7 +1165,11 @@ await fetchMeals();
 }}
     >
       {drinkOptions.map((d, i) => (
-        <option key={i} value={d}>{d}</option>
+        <option key={i} value={d}>
+  {d === "None"
+    ? "Tiada / 无"
+    : d}
+</option>
       ))}
     </select>
  {[
